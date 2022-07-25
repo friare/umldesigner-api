@@ -19,7 +19,7 @@ def toClassDigramXML(request: schemas.UMLText):
     diagramObject = ai.umlObjectExtractor(firstClassification)
 
     #xml formater
-    xml = xmlTools.main(diagramObject)
+    xml = xmlTools.main(diagramObject) 
 
     #result
     result = schemas.ShowUMLSchema(xml=xml)

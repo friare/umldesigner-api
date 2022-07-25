@@ -280,5 +280,24 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
     table = classExtractor(svoList, verbose=False)
     relation = relationExtractor(svoList, table, verbose=True)
 
+    #filter duplicate
+    relationFilter = []
+    for rel in relation:
+        find1 = False
+        find2 = False
+        for relChecked in relationFilter:
+            if((relChecked['t1'] == rel['t1']) and (relChecked['t2'] == rel['t2'])):
+                find1 = True
+                break;
+        if not find1:
+            for i, relChecked in enumerate(relationFilter):
+                if((relChecked['t1'] == rel['t2']) and (relChecked['t2'] == rel['t1'])):
+                    #relationFilter[i]['c1'] = ''
+                    #relationFilter[i]['c2'] = ''
+                    find2 = True
+                    break
+            if not find2:
+                relationFilter.append(rel)
+    
     #return
-    return {'allNodes': table, 'relation': relation}
+    return {'allNodes': table, 'relation': relationFilter}

@@ -184,12 +184,15 @@ def getRichNode(relationList):
     for d in stat.values():
         calculate['c1'].append(d['count1'])
         calculate['c2'].append(d['count2'])
-    if max(calculate['c1']) > max(calculate['c2']):
-        return 't1', list(stat.keys())[calculate['c1'].index(max(calculate['c1']))]
-    elif max(calculate['c1']) < max(calculate['c2']):
-        return 't2', list(stat.keys())[calculate['c2'].index(max(calculate['c2']))]
+    if len(calculate['c1']) != 0 and len(calculate['c2']) != 0:
+        if max(calculate['c1']) > max(calculate['c2']):
+            return 't1', list(stat.keys())[calculate['c1'].index(max(calculate['c1']))]
+        elif max(calculate['c1']) < max(calculate['c2']):
+            return 't2', list(stat.keys())[calculate['c2'].index(max(calculate['c2']))]
+        else:
+            return 't1', list(stat.keys())[calculate['c1'].index(max(calculate['c1']))]
     else:
-        return 't1', list(stat.keys())[calculate['c1'].index(max(calculate['c1']))]
+        return None
 
 
 class Node:
@@ -273,52 +276,6 @@ def setTableOffset(tableName, all_node, x, y):
             table['y'] = y
 
 X0 = 0
-# def treeBuilder(all_node: list, relations: list, root_tag: tuple, root=None, x0: int=0, y0: int = 1,
-#                 separation: int = 5) -> Node:
-#     nodeRoot = Node(root, [], x0, y0)
-#     setTableOffset(root_tag[1], all_node, x0, y0)
-#     nChild = 0
-#     firstChildXPos = 0
-#     nextLevel = y0 + 1
-#     paddingLeft = 30
-#     nodeOffsetList = list()
-#     nodeCursor = 0
-#     currentNodeOffset = None
-#     mostRightLeafXPos = x0+getTableOffset(root_tag[1], all_node)[0]
-#
-#     for i in range(len(relations)):
-#         if i == 0:
-#             for j in range(len(relations)):
-#                 if relations[j][root_tag[0]] == root_tag[1]:
-#                     nChild += 1
-#                     currentNodeOffset = getTableOffset(relations[j][root_tag[0]], all_node)
-#                     nodeOffsetList.append(getTableOffset(relations[j]['t2' if root_tag[0] == 't1' else 't1'], all_node))
-#
-#             firstChildXPos = x0 if nChild == 1 else nodeLeftMarginValue(x0, separation, nChild)
-#             # firstChildXPos = paddingLeft if firstChildXPos < 0 else firstChildXPos
-#
-#         if relations[i][root_tag[0]] == root_tag[1]:
-#             symetricRootTag0 = 't1' if root_tag[0] == 't2' else 't2'
-#             if relations[i][symetricRootTag0] == getRichNode(relations)[1]:
-#                 break
-#
-#             if nodeCursor == 0:
-#                 nodeRoot.child.append(
-#                     treeBuilder(all_node, relations, (root_tag[0], relations[i][symetricRootTag0]), nodeRoot,
-#                                 firstChildXPos, nextLevel + currentNodeOffset[1] + paddingLeft, separation))
-#             else:
-#                 nodeRoot.child.append(
-#                     treeBuilder(all_node, relations, (root_tag[0], relations[i][symetricRootTag0]), nodeRoot,
-#                                 # mostRightLeafXPos + nodeOffsetList[nodeCursor][0] + 100,
-#                                 mostRightLeafXPos + nodeOffsetList[nodeCursor][0] + 100,
-#                                 nextLevel + currentNodeOffset[1] + paddingLeft, separation))
-#
-#             firstChildXPos = firstChildXPos + separation
-#             nodeCursor = nodeCursor + 1
-#     mostRightLeafXPos = mostRightLeafXPos + 10000
-#     a = input('ok => ')
-#     return nodeRoot
-
 
 def treeNodePosition(all_node: list, relations: list, root_tag: tuple, parent=None, depth: int = 0, leftScale: int = 30) -> Node:
     # variables
@@ -383,9 +340,10 @@ def treeTraveler(tree: Node, all_node: list):
 def main(data):
     tableOffsetSetter(data['allNodes'])
     rootNodeTag = getRichNode(data['relation'])
-    tree, treeWidth = treeNodePosition(data['allNodes'], data['relation'], rootNodeTag)
-    tree.x = abs(int(treeWidth[0]/2)-int(getTableOffset(tree.label, data['allNodes'])[0]/2))
-    tree.x = 30
-    treeTraveler(tree, data['allNodes'])
+    if rootNodeTag != None:
+        tree, treeWidth = treeNodePosition(data['allNodes'], data['relation'], rootNodeTag)
+        tree.x = abs(int(treeWidth[0]/2)-int(getTableOffset(tree.label, data['allNodes'])[0]/2))
+        tree.x = 30
+        treeTraveler(tree, data['allNodes'])
     xml = xmlGenerator(diagramTypeTag.UMLClassDiagram, data)
     return xml

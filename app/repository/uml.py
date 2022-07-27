@@ -6,61 +6,74 @@ from ..nlp_ai import core as ai
 from ..nlp_ai import xmlBuilder as xmlTools
 
 def toClassDigramXML(request: schemas.UMLText):
-    #get plain text
-    text = request.text
+    try:
+        #get plain text
+        text = request.text
 
-    # syntaxic analysis
-    doc = ai.plainTextParser(text)
-    # semantic analysis
-    svo = ai.atomicSentenceMaker(doc, verbose=False)
-    # Classifier Layer1
-    firstClassification = ai.umlObjectClassifier(svo, verbose=False)
-    # Classifier Layer2
-    diagramObject = ai.umlObjectExtractor(firstClassification)
+        # syntaxic analysis
+        doc = ai.plainTextParser(text)
+        # semantic analysis
+        svo = ai.atomicSentenceMaker(doc, verbose=False)
+        # Classifier Layer1
+        firstClassification = ai.umlObjectClassifier(svo, verbose=False)
+        # Classifier Layer2
+        diagramObject = ai.umlObjectExtractor(firstClassification)
 
-    #xml formater
-    xml = xmlTools.main(diagramObject) 
+        #xml formater
+        xml = xmlTools.main(diagramObject) 
 
-    #result
-    result = schemas.ShowUMLSchema(xml=xml)
-    return result
+        #result
+        result = schemas.ShowUMLSchema(xml=xml)
+        return result
+    except:
+        return "AN ERROR OCCUR"
+   
 
 def toClassDigramOBJ(request: schemas.UMLText):
-    #get plain text
-    text = request.text
+    try:
+        #get plain text
+        text = request.text
 
-    # syntaxic analysis
-    doc = ai.plainTextParser(text)
-    # semantic analysis
-    svo = ai.atomicSentenceMaker(doc, verbose=False)
-    # Classifier Layer1
-    firstClassification = ai.umlObjectClassifier(svo, verbose=False)
-    # Classifier Layer2
-    diagramObject = ai.umlObjectExtractor(firstClassification)
+        # syntaxic analysis
+        doc = ai.plainTextParser(text)
+        # semantic analysis
+        svo = ai.atomicSentenceMaker(doc, verbose=False)
+        # Classifier Layer1
+        firstClassification = ai.umlObjectClassifier(svo, verbose=False)
+        # Classifier Layer2
+        diagramObject = ai.umlObjectExtractor(firstClassification)
 
-    #result
-    return diagramObject
+        #result
+        return diagramObject
+    except:
+        return "AN ERROR OCCUR"
 
 def sentenceSplit(request: schemas.UMLText):
-    #get plain text
-    text = request.text
+    try:
+        #get plain text
+        text = request.text
 
-    # syntaxic analysis
-    doc = ai.plainTextParser(text)
-    # semantic analysis
-    svo = ai.atomicSentenceMaker(doc, verbose=False)
-    # Classifier Layer1
-    firstClassification = ai.umlObjectClassifier(svo, verbose=False)
+        # syntaxic analysis
+        doc = ai.plainTextParser(text)
+        # semantic analysis
+        svo = ai.atomicSentenceMaker(doc, verbose=False)
+        # Classifier Layer1
+        firstClassification = ai.umlObjectClassifier(svo, verbose=False)
 
-    #result
-    return firstClassification
+        #result
+        return firstClassification
+    except:
+        return "AN ERROR OCCUR"
 
 def stanzaPipeline(request: schemas.UMLText):
-    #get plain text
-    text = request.text
+    try:
+        #get plain text
+        text = request.text
 
-    # syntaxic analysis
-    doc = ai.plainTextParser(text)
+        # syntaxic analysis
+        doc = ai.plainTextParser(text)
 
-    #result
-    return ai.text_parser(doc)
+        #result
+        return ai.text_parser(doc)
+    except:
+        return "AN ERROR OCCUR"

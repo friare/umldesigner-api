@@ -14,11 +14,18 @@ stanza.download('fr')
 #Constructing Pipeline to get all text processsing tools
 nlp_pipeline = stanza.Pipeline('fr')
 
+#load keys word
+AGREGATION_LIST = []
+with open('src/aggregation_keyword.txt') as file:
+    for word in file:
+        AGREGATION_LIST.append(word.strip())
+
 # =========================================================================================
 # Function
 # =========================================================================================
-def plainTextParser(text):
-    return nlp_pipeline(text)
+def get_input_text():
+    plain_text = str(input('Input : '))
+    return plain_text
 
 def init_list_of_objects(size):
     list_of_objects = list()
@@ -38,7 +45,7 @@ def text_parser(doc):
     for i, sent in enumerate(doc.sentences):
         sentence_size = len([i for i in sent.words])
         data = init_list_of_objects(sentence_size)
-
+        
         for j, word in enumerate(sent.words):
             data[j].append(word.text)
             data[j].append(word.lemma)
@@ -46,7 +53,14 @@ def text_parser(doc):
             data[j].append(word.deprel)
             data[j].append(word.head)
         tab_result.append({"Sentence {}".format(i+1):data})
+        
+    print("-"*55)
+    preview(doc)
+    print("-"*55)
     return tab_result
+
+def plainTextParser(text):
+    return nlp_pipeline(text)
 
 def getRootNodeInSentence(sentence):
     for word in sentence.words:
@@ -83,26 +97,28 @@ def searchEngine(root, sent) -> list:
                     subNoun[i]['relation'] = "cconj"
                 else:
                     subNoun[i]['relation'] = None
-
+            
             if 'nsubj' in noun['word'].deprel:
                 verbalSentence['subject'] = {'main': noun, 'linked': subNoun}
             else:
                 verbalSentence['other'].append({'main': noun, 'linked': subNoun})
 
         #logic2
-        linkedVerb = wordLinkedNodeSelector(sent, root.id, 'VERB')
+        linkedVerb = wordLinkedNodeSelector(sent, root.id, 'VERB')  
         for verb in linkedVerb:
             if verb.deprel == 'xcomp':
                 verbalSentence['verb'] = verb
-            if verbalSentence['subject'] == None:
+            if verbalSentence['subject'] == None and verbalSentence['verb'].deprel != 'xcomp':
                 verbalSentence['action'].append(verb)
             else:
-                temp = searchEngine(verb, sent)
-                if temp[0]['subject'] == None:
-                    verbalSentence['action'] += temp[0]['action']
-                else:
-                    result += temp
-
+                temp = searchEngine(verb, sent)  
+                for data in temp:
+                    if data['subject'] == None:
+                        verbalSentence['action'] += [data['verb']]
+                        verbalSentence['action'] += data['action']
+                    else:
+                        result += [data]
+        
         #return
         return [verbalSentence] + result
     return []
@@ -113,25 +129,25 @@ def atomicSentenceMaker(doc: stanza.Document, verbose: bool = False) -> list:
         root = getRootNodeInSentence(sent)
         structuredSentence = searchEngine(root, sent)
         result.append(structuredSentence)
-
+        
         #debug
         if verbose == True:
             print(structuredSentence)
             print('================>\n\n')
-
+    
     #return
     return result
 
 def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
     #funct
     def getNewStruct():
-        return {'d1': None, 's1': None, 'v': None, 'd2': None, 's2': None, 'ss1': [], 'ss2': [], 'obj': []}
-
+        return {'d1': None, 's1': None, 'v': None, 'd2': None, 's2': None, 'ss1': [], 'ss2': [], 'obj': [], 'sens': 'toRight'}
+    
     #data
     result = []
     template = []
     SIMPLE_PASS_SENTENCE = False
-
+    
     #logic1
     for structObj in svo:
         for obj in structObj:
@@ -141,13 +157,12 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
                 t['v'] = obj['verb'].lemma
                 t_subj = obj['subject']['main']['word']
                 t_otherList = obj['other']
-
-
+                    
                 for element in obj['action']:
                     t['obj'].append(element.lemma)
 
                 SIMPLE_PASS_SENTENCE = True if 'pass' in t_subj.deprel else False
-
+                
                 t['s1'] = t_subj.lemma
                 t['d1'] = obj['subject']['main']['det'][0].lemma if len(obj['subject']['main']['det'])>0 else 'default'
                 for element in obj['subject']['linked']:
@@ -167,36 +182,41 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
                         t3['d2'] = element['main']['det'][0].lemma if len(element['main']['det'])>0 else 'default'
                         if SIMPLE_PASS_SENTENCE:
                             _t3 = t3.copy()
-                            _t3['s1'] = t3['s2']
-                            _t3['d1'] = t3['d2']
-                            _t3['d2'] = t3['d1']
-                            _t3['s2'] = t3['s1']
-                            _t3['ss1'] = t3['ss2']
-                            _t3['ss2'] = t3['ss1']
+                            _t3['sens'] = 'toLeft'
+#                             _t3['ss1'] = t3['ss2']
+#                             _t3['ss2'] = t3['ss1']
+#                             _t3['s1'] = t3['s2']
+#                             _t3['d1'] = t3['d2']
+#                             _t3['d2'] = t3['d1']
+#                             _t3['s2'] = t3['s1']
                             result.append(_t3)
                         else:
                             result.append(t3)
                         for sub in element['linked']:
                             if sub['relation'] == None:
                                 if SIMPLE_PASS_SENTENCE:
-                                    result[-1]['ss1'].append(sub['word'].lemma)
+                                    result[-1]['ss2'].append(sub['word'].lemma)
                                 else:
                                     result[-1]['ss2'].append(sub['word'].lemma)
-                            else:
+                            else:                      
                                 t3 = firstPart.copy()
                                 t3['s2'] = sub['word'].lemma
                                 t3['d2'] = sub['det'][0].lemma if len(sub['det'])>0 else 'default'
                                 if SIMPLE_PASS_SENTENCE:
                                     _t3 = t3.copy()
-                                    _t3['s1'] = t3['s2']
-                                    _t3['d1'] = t3['d2']
-                                    _t3['d2'] = t3['d1']
-                                    _t3['s2'] = t3['s1']
-                                    _t3['ss1'] = t3['ss2']
-                                    _t3['ss2'] = t3['ss1']
+                                    _t3['sens'] = 'toLeft'
+#                                     _t3['ss1'] = t3['ss2']
+#                                     _t3['ss2'] = t3['ss1']
+#                                     _t3['s1'] = t3['s2']
+#                                     _t3['d1'] = t3['d2']
+#                                     _t3['d2'] = t3['d1']
+#                                     _t3['s2'] = t3['s1']
                                     result.append(_t3)
                                 else:
                                     result.append(t3)
+                    
+                    if not obj['other']:
+                        result += templatel
 
                 if result == []:
                     result = template
@@ -206,7 +226,7 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
         for parseData in result:
             print(parseData)
             print('---------')
-
+        
     #return
     return result
 
@@ -217,42 +237,43 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
         potential_class = []
         potential_attribute = []
         result = []
-
-        print(len(svoList))
-
+        
         for sentObj in svoList:
             potential_class.append(sentObj['s1'])
             if sentObj['s2'] != None:
                 potential_attribute.append(sentObj['s2'])
-                potential_attribute += sentObj['ss2']
+                potential_attribute += sentObj['ss2']            
             class_with_desc[sentObj['s1']] = {'name': sentObj['s1'], 'attributes': [], 'methods': [], 'x': 0, 'y': 0, 'width': 0, 'height': 0}
-
-        potential_attribute = list( dict.fromkeys(potential_attribute))
-
+           
+        potential_attribute = list(dict.fromkeys(potential_attribute))
+        
         for _class in potential_class:
             if _class in potential_attribute:
                 potential_attribute.remove(_class)
-
+            
         for sentObj in svoList:
             if sentObj['s2'] in potential_attribute:
                 class_with_desc[sentObj['s1']]['attributes'].append(sentObj['s2'])
                 class_with_desc[sentObj['s1']]['attributes'] += sentObj['ss2']
             if sentObj['obj']:
-                class_with_desc[sentObj['s1']]['methods'] += ([sentObj['v']]+sentObj['obj'])
+                class_with_desc[sentObj['s1']]['methods'] += list(set([sentObj['v']]+sentObj['obj']))
 
         for k in class_with_desc.keys():
             result.append(class_with_desc[k])
-
+            
         if verbose:
             #debug
             for _class in result:
                 print(_class)
 
         return result
-
-    def getRelationType(verb: str) -> str:
-        return 'ASSOCIATION'
-
+    
+    def getRelationType(verb: str, sens: str = 'toRight') -> str:
+        if verb in AGREGATION_LIST:
+            return 'AGGREGATION' if sens == 'toRight' else 'COMPOSITION'
+        else:
+            return 'ASSOCIATION'
+    
     def getMultiplicity(verb: str) -> str:
         cardinality_reper ={'chaque': '1,1', 'un et un seul':'1,1', 'un':'1,1', 'des':'0,*', 'plusieurs':'0,*', 'au moins':'1,*'}
         for search_val in cardinality_reper.keys():
@@ -260,14 +281,18 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
             if search_val in verb:
                 return cardinality_reper[search_val]
         return ""
-
+    
     def relationExtractor(svoList: list, classDesc: list, verbose: bool = False) -> list:
         potentialRelation = []
         className = [elem['name'] for elem in classDesc]
         for sentence in svoList:
             if sentence['s1'] in className and sentence['s2'] in className:
-                temp = {'t1': sentence['s1'], 't2': sentence['s2'], 'type': getRelationType(sentence['v']), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'b', 'label': sentence['v']}
+                temp = {'t1': sentence['s1'], 't2': sentence['s2'], 'type': getRelationType(sentence['v'], sens=sentence['sens']), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v']}
                 potentialRelation.append(temp)
+            for ss2 in sentence['ss2']:
+                if sentence['s1'] in className and ss2 in className:
+                    temp = {'t1': sentence['s1'], 't2': ss2, 'type': getRelationType(sentence['v'], sens=sentence['sens']), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v']}
+                    potentialRelation.append(temp)
 
         if verbose:
             #debug
@@ -275,11 +300,11 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
                 print(relation)
 
         return potentialRelation
-
+    
     #main
     table = classExtractor(svoList, verbose=False)
     relation = relationExtractor(svoList, table, verbose=True)
-
+    
     #filter duplicate
     relationFilter = []
     for rel in relation:

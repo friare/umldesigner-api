@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from . import schemas
+from ..schemas import schemas
 
 
 SECRET_KEY = "d5931bf879a3cbacace54c759f28f707bce8384d9231c6e206c2fb7886faded0"

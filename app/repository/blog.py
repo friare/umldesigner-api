@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import status, HTTPException
-from .. import models, schemas
+from ..datastruct import models
+from ..schemas import schemas
 
 def create(request: schemas.Blog, db: Session):
     new_blog = models.Blog(title=request.title, body=request.body, user_id=1)

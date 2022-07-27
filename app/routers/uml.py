@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
-from .. import schemas, database, models
+from ..datastruct import models, database
+from ..schemas import schemas
 from ..repository import uml as umlRepository
 
 router = APIRouter(

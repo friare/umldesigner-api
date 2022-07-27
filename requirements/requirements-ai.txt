@@ -1,4 +1,0 @@
-stanza
-nltk
-pyspellchecker
-pandas

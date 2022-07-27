@@ -1,3 +1,4 @@
+python-dotenv
 fastapi
 uvicorn
 sqlalchemy
@@ -5,4 +6,3 @@ pydantic
 passlib
 python-jose
 python-multipart
-fastapi-users[sqlalchemy]

@@ -14,7 +14,7 @@ SHELL ["/bin/bash", "-c"]
 # install the packages from the Pipfile in the container
 RUN python -m venv api-env
 RUN source api-env/bin/activate
-#RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # expose the port that uvicorn will run the app on

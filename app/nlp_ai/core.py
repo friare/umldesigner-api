@@ -60,7 +60,9 @@ def text_parser(doc):
     return tab_result
 
 def plainTextParser(text):
-    return nlp_pipeline(text)
+    escape = re.compile(re.escape('a chaque'), re.IGNORECASE)
+    text2 = escape.sub('un', text)
+    return nlp_pipeline(text2)
 
 def getRootNodeInSentence(sentence):
     for word in sentence.words:
@@ -216,7 +218,7 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
                                     result.append(t3)
                     
                     if not obj['other']:
-                        result += templatel
+                        result += template
 
                 if result == []:
                     result = template
@@ -326,3 +328,5 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
     
     #return
     return {'allNodes': table, 'relation': relationFilter}
+
+# checkpoint - 202207271752

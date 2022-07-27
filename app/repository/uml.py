@@ -3,6 +3,7 @@ from fastapi import status, HTTPException, status
 from .. import models, schemas
 from ..hashing import Hash
 from ..nlp_ai import core as ai
+from ..nlp_ai import trace as trace
 from ..nlp_ai import xmlBuilder as xmlTools
 
 def toClassDigramXML(request: schemas.UMLText):
@@ -25,7 +26,9 @@ def toClassDigramXML(request: schemas.UMLText):
         #result
         result = schemas.ShowUMLSchema(xml=xml)
         return result
-    except:
+    except Exception as e:
+        trace.save_log(request.text, e)
+        raise HTTPException(status_code=500, detail='NLP Pipline code error')
         return "AN ERROR OCCUR"
    
 
@@ -45,7 +48,9 @@ def toClassDigramOBJ(request: schemas.UMLText):
 
         #result
         return diagramObject
-    except:
+    except Exception as e:
+        trace.save_log(request.text, e)
+        raise HTTPException(status_code=500, detail='NLP Pipline code error')
         return "AN ERROR OCCUR"
 
 def sentenceSplit(request: schemas.UMLText):
@@ -62,7 +67,9 @@ def sentenceSplit(request: schemas.UMLText):
 
         #result
         return firstClassification
-    except:
+    except Exception as e:
+        trace.save_log(request.text, e)
+        raise HTTPException(status_code=500, detail='NLP Pipline code error')
         return "AN ERROR OCCUR"
 
 def stanzaPipeline(request: schemas.UMLText):
@@ -75,5 +82,7 @@ def stanzaPipeline(request: schemas.UMLText):
 
         #result
         return ai.text_parser(doc)
-    except:
+    except Exception as e:
+        trace.save_log(request.text, e)
+        raise HTTPException(status_code=500, detail='NLP Pipline code error')
         return "AN ERROR OCCUR"

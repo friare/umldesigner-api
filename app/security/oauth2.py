@@ -3,7 +3,7 @@ from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from . import token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 async def get_current_user(token_data: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -13,8 +13,3 @@ async def get_current_user(token_data: str = Depends(oauth2_scheme)):
     )
 
     return token.verify_token(token_data, credentials_exception)
-
-    user = get_user(fake_users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user

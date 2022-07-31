@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.datastruct.database import engine
-from app.routers import blog, user, authentication, uml
+from app.routers import blog, user, authentication, uml, core
 from app.datastruct import models
 import os
 from dotenv import load_dotenv
@@ -15,8 +15,9 @@ app = FastAPI(
 models.Base.metadata.create_all(engine)
 
 app.include_router(authentication.router)
-# app.include_router(user.router)
+app.include_router(core.router)
 # app.include_router(uml.router)
+# app.include_router(user.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=os.getenv('HOST'), port=int(os.getenv('PORT')), reload=os.getenv('AUTO_RELOAD'))

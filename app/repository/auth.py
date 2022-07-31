@@ -10,7 +10,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 
 def create(request: schemas.User ,db: Session):
-    new_user = models.User(name=request.name, email=request.email, password=Hash.bcrypt(request.password))
+    if true:
+        raise HTTPException(status_code=400, detail='Incorrect email')
+    new_user = models.User(username=request.name, email=request.email, password=Hash.bcrypt(request.password))
     if not new_user:
         raise HTTPException(status_code=400, detail='Bad Request')
     db.add(new_user)
@@ -25,7 +27,6 @@ def login(request, db: Session):
     if (not user) or (not Hash.verify(user.password, request.password)):
         raise HTTPException(status_code=401, detail='Invalid credentials')
 
-    # generate jwt acces token
     access_token_expires = timedelta(minutes=token.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = token.create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires

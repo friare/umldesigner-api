@@ -17,7 +17,7 @@ def create(request: schemas.User, db: Session = Depends(database.get_db)):
     return authRepository.create(request, db)
 
 @router.post('/token')
-async def login(request: schemas.Login, db: Session = Depends(database.get_db)):
+async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     return authRepository.login(request, db)
 
 @router.get('/logout')

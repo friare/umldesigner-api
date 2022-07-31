@@ -7,10 +7,12 @@ from ..security.hashing import Hash
 from datetime import datetime, timedelta
 from jose import jwt
 from fastapi.security import OAuth2PasswordRequestForm
+import re 
 
+regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 
 def create(request: schemas.User ,db: Session):
-    if true:
+    if re.search(regex, request.email):
         raise HTTPException(status_code=400, detail='Incorrect email')
     new_user = models.User(username=request.name, email=request.email, password=Hash.bcrypt(request.password))
     if not new_user:

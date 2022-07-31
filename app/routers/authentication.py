@@ -25,13 +25,6 @@ async def logout(session: Session = Depends(OAuth2PasswordBearer(tokenUrl="token
     await session.revoke_session()
     return JSONResponse({})
 
-# @router.get('/logout')
-# def logout(session: Session = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
-#     resp = RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
-#     manager.set_cookie(resp, "")
-#     return resp
-
-
 @router.post('/reset-password')
 def reset(request: schemas.Password, token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")), session: Session = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     return authRepository.reset(request, db, token)

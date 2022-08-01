@@ -3,12 +3,58 @@ from enum import Enum
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime, time, timedelta
+
+
+#--------------------------------
+#--------------------------------
+
+class Project(BaseModel):
+    title: str
+    description: str
+
+class ShowProject(BaseModel):
+    title: str
+    description: str
+    date_creation: datetime
+    is_active: bool
+    creator_id: int
+    # diagrams: List[Diagram] = []
+
+    class Config():
+        orm_mode = True
 
 
 class User(BaseModel):
     name: str
     email: str
     password: str
+
+class ShowUser(BaseModel):
+    name: str
+    email: str
+    projects: List[Project] = []
+    # alerts: List[Alert] = []
+
+    class Config():
+        orm_mode = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    id: str
+    disabled: str
+    name: str
+    email: Optional[str] = None
+
+class ShowResponse(BaseModel):
+    detail: str
+
+#--------------------------------
+#--------------------------------
 
 
 class BlogBase(BaseModel):
@@ -26,13 +72,6 @@ class Blog(BlogBase):
         orm_mode = True
 
 
-class ShowUser(BaseModel):
-    name: str
-    email: str
-    blogs: List[Blog] = []
-
-    class Config():
-        orm_mode = True
 
 
 class ShowBlog(BaseModel):
@@ -47,15 +86,6 @@ class ShowBlog(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    email: Optional[str] = None
 
 
 class DiagramType( str, Enum ):
@@ -73,4 +103,3 @@ class ShowUMLSchema(BaseModel):
 
     class Config():
         orm_mode = True
-

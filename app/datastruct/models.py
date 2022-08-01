@@ -21,6 +21,7 @@ class Project(Base):
     title = Column(String)
     description = Column(String) 
     date_creation = Column(DATETIME)
+    is_active = Column(Boolean, default=True)
     creator_id = Column(Integer, ForeignKey('users.id'))
 
     creator = relationship('User', back_populates='projects')
@@ -35,6 +36,7 @@ class Diagram(Base):
     xml_image = Column(Text)
     public_link = Column(Text)
     date_creation = Column(DATETIME)
+    is_active = Column(Boolean, default=True)
     author_user_id = Column(Integer, ForeignKey('users.id'))
 
 class Code(Base):
@@ -44,6 +46,7 @@ class Code(Base):
     language = Column(String)
     content = Column(String)
     date_creation = Column(DATETIME)
+    is_active = Column(Boolean, default=True)
     linked_diagram_id = Column(Integer, ForeignKey('diagrams.id'))
 
 class Collaborator(Base):

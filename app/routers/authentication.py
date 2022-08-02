@@ -17,7 +17,8 @@ router = APIRouter(
 async def create(request: schemas.User, db: Session = Depends(database.get_db)):
     user = authRepository.create(request, db)
 
-    msg = mail.template_new_account.format(request.email, request.email, "https://umldesigner.app/activate-account/"+user.activation_token)
+    # msg = mail.template_new_account.format(request.email, request.email, "https://umldesigner.app/activate-account/"+user.activation_token)
+    msg = mail.template_new_account
 
     message = mail.MessageSchema(
         subject="subject",

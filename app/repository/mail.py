@@ -125,7 +125,7 @@ template_new_account = """
  </div>
 """
 
-invitation_to_project = """
+invitation_to_project = """\
 <div style="margin:0;box-sizing:border-box;color:#505050;font-family:Roboto,sans-serif;font-size:14px;font-weight:400;line-height:1.3;margin:0;min-width:100%;padding:0;text-align:left;width:100%!important">
     <span style="color:#f3f3f3;display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">UMLdesigner Mail Service</span>
     <table style="margin:0;background:#f3f3f3;border-collapse:collapse;border-spacing:0;color:#505050;font-family:Roboto,sans-serif;font-size:14px;font-weight:400;height:100%;line-height:1.3;margin:0;padding:0;text-align:left;vertical-align:top;width:100%">

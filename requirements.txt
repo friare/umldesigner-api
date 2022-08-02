@@ -2,13 +2,12 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic
-
 passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
 bcrypt
-
 python-dotenv
+fastapi-mail
 
 stanza
 nltk

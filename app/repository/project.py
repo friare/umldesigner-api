@@ -11,6 +11,10 @@ def get_all(db, tokendata):
     return project
 
 def create(request, db, tokendata):
+    p = db.query(models.Project).filter(models.Project.title  == request.title).filter(models.Project.creator_id  == tokendata.id).filter(models.Project.is_active == True).first()
+    if p:
+        raise HTTPException(status_code=400, detail=f"Such project already exist. Please change title.")
+
     new_project = models.Project(title=request.title, description=request.description, date_creation=datetime.now(), creator_id=tokendata.id)
     db.add(new_project)
     db.commit()
@@ -24,10 +28,10 @@ def get(id, db, tokendata):
     return project
 
 def delete(id, db, tokendata):
-    project = db.query(models.Project).filter(models.Project.id == id).filter(models.Project.creator_id == tokendata.id).filter(models.Project.is_active == True)
+    project = db.query(models.Project).filter(models.Project.id == id).filter(models.Project.creator_id == tokendata.id)
     if not project.first():
         raise HTTPException(status_code=404, detail=f"This project do not exist.")
-    project.update({'is_active': False})
+    project.delete(synchronize_session=False)# .update({'is_active': False})
     db.commit()
     return {'detail': 'Project successfully deleted.'}
 
@@ -38,7 +42,3 @@ def update(request, id, db, tokendata):
     project.update({'title': request.title, 'description': request.description})
     db.commit()
     return project.first()
-
-def invited_project(db, tokendata):
-    project = db.query(models.Project).filter(models.Project.creator_id == tokendata.id).filter(models.Project.is_active == True).all()
-    return project

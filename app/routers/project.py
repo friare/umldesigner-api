@@ -5,6 +5,8 @@ from ..schemas import schemas
 from ..repository import project as projectRepo
 from ..security import oauth2
 from typing import List
+from ..repository import mail
+
 
 router = APIRouter(
     prefix='',
@@ -18,10 +20,6 @@ def create_project(request: schemas.Project, db: Session = Depends(database.get_
 @router.get('/projects/me', status_code=200, response_model=List[schemas.ShowProject])
 def all_project(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return projectRepo.get_all(db, tokendata)
-
-@router.get('/projects/invite', status_code=200, response_model=List[schemas.ShowProject])
-def invited_project(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
-    return projectRepo.invited_project(db, tokendata)
 
 @router.get('/project/me/{id}', status_code=200, response_model=schemas.ShowProject)
 def get_project(id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):

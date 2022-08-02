@@ -9,17 +9,43 @@ from datetime import datetime, time, timedelta
 #--------------------------------
 #--------------------------------
 
+class Diagram(BaseModel):
+    label: str = "new diagram"
+    plain_text: str = ""
+
+class DiagramUpdate(BaseModel):
+    label: str = "new diagram"
+    plain_text: str = ""
+    xml_image: str
+
+class ShowDiagram(BaseModel):
+    id: int
+    type: str
+    label: str
+    plain_text: str
+    xml_image: str
+    public_acces_token: str
+    date_creation: datetime
+    author_id: int
+    project_id: int
+
+    class Config():
+        orm_mode = True
+
+
 class Project(BaseModel):
     title: str
     description: str
 
 class ShowProject(BaseModel):
+    id: int
     title: str
     description: str
     date_creation: datetime
     is_active: bool
     creator_id: int
-    # diagrams: List[Diagram] = []
+    diagrams: List[ShowDiagram] = []
+    collaborators: List[ShowDiagram] = []
 
     class Config():
         orm_mode = True
@@ -31,14 +57,41 @@ class User(BaseModel):
     password: str
 
 class ShowUser(BaseModel):
+    id: int
     name: str
     email: str
-    projects: List[Project] = []
+    projects: List[ShowProject] = []
     # alerts: List[Alert] = []
 
     class Config():
         orm_mode = True
 
+
+class Collaborator(BaseModel):
+    role: str
+    permission: str
+    project_id: int
+    user_id: int
+
+class ShowCollaborator(BaseModel):
+    id: int
+    role: str
+    permission: str
+    project_id: int
+    user_id: int
+    is_active: int
+
+    class Config():
+        orm_mode = True
+
+class ShowComplexColab(BaseModel):
+    data: str
+    validation_token: str
+    revokation_token: str
+    collaborator: ShowCollaborator
+    
+
+#---
 
 class Token(BaseModel):
     access_token: str
@@ -52,6 +105,11 @@ class TokenData(BaseModel):
 
 class ShowResponse(BaseModel):
     detail: str
+
+class Email(BaseModel):
+    email: str = "example@mail.com"
+
+#---
 
 #--------------------------------
 #--------------------------------
@@ -88,11 +146,11 @@ class Login(BaseModel):
     password: str
 
 
-class DiagramType( str, Enum ):
-    use_case = "use_case"
-    class_diag = "class"
-    sequence_diag = "sequence"
-    object_diag = "object"
+class DiagramType(str, Enum):
+    use_case        = "USE_CASE"
+    class_diag      = "CLASS"
+    sequence_diag   = "SEQUENCE"
+    object_diag     = "OBJECT"
 
 
 class UMLText(BaseModel):

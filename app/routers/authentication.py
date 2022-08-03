@@ -50,6 +50,14 @@ async def logout(session: Session = Depends(OAuth2PasswordBearer(tokenUrl="token
 def reset(request: schemas.Password, db: Session = Depends(database.get_db), token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     return authRepository.reset(request, db, token)
 
+@router.post('/forget-password')
+def reset(request: schemas.Password, db: Session = Depends(database.get_db), token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
+    return authRepository.reset(request, db, token)
+
 @router.get('/user/me', response_model=schemas.ShowUser, status_code=200)
+async def user_me(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+    return authRepository.user_me(db, tokendata)
+
+@router.update('/user/me', response_model=schemas.ShowUser, status_code=200)
 async def user_me(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return authRepository.user_me(db, tokendata)

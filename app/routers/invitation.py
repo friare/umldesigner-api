@@ -25,7 +25,7 @@ def reject_as_user(token: str, db: Session = Depends(database.get_db)):
 def signup_and_accept(request: schemas.User, token1: str, token2: str, db: Session = Depends(database.get_db)):
     data = invitationRepo.signup_and_accept(request, token1, token2, db)
 
-@router.delete('/invitation/guest/reject/{token1}/{token2}', status_code=200, response_model=schemas.ShowResponse)
+@router.post('/invitation/guest/reject/{token1}/{token2}', status_code=200, response_model=schemas.ShowResponse)
 def reject_as_guest(token1: str, token2: str, db: Session = Depends(database.get_db)):
     data = invitationRepo.reject_as_guest(token1, token2, db,)
 

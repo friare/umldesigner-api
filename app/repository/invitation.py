@@ -19,7 +19,7 @@ def accept(token, db):
     return {'detail': 'You have acces to this project now.'}
 
 def reject_as_user(token, db):
-    collaborator = db.query(models.Collaborator).filter(models.Collaborator.validation_token == token).filter(models.Collaborator.is_active == False)
+    collaborator = db.query(models.Collaborator).filter(models.Collaborator.revokation_token == token).filter(models.Collaborator.is_active == False)
     if not collaborator.first():
         raise HTTPException(status_code=404, detail='Not Found.')
     collaborator.delete(synchronize_session=False)

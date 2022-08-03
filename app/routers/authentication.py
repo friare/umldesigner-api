@@ -58,6 +58,6 @@ def reset(request: schemas.Password, db: Session = Depends(database.get_db), tok
 async def user_me(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return authRepository.user_me(db, tokendata)
 
-@router.update('/user/me', response_model=schemas.ShowUser, status_code=200)
+@router.put('/user/me', response_model=schemas.ShowUser, status_code=200)
 async def user_me(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return authRepository.user_me(db, tokendata)

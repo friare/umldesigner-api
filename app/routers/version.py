@@ -17,6 +17,14 @@ router = APIRouter(
 def accept(id: int, db: Session = Depends(database.get_db)):
     data = invitationRepo.accept(token, db)
 
-@router.put('/version/push/{id}', status_code=200, response_model=schemas.ShowResponse)
+@router.post('/version/push/{id}', status_code=200, response_model=schemas.ShowResponse)
+def reject_as_user(token: str, db: Session = Depends(database.get_db)):
+    data = invitationRepo.reject_as_user(token, db)
+
+@router.get('diagram/version', status_code=200, response_model=schemas.ShowResponse)
+def accept(id: int, db: Session = Depends(database.get_db)):
+    data = invitationRepo.accept(token, db)
+
+@router.put('/version/update/{id}', status_code=200, response_model=schemas.ShowResponse)
 def reject_as_user(token: str, db: Session = Depends(database.get_db)):
     data = invitationRepo.reject_as_user(token, db)

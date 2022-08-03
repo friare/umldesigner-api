@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.post('/collaborator/invite/{project_id}', status_code=200, response_model=schemas.ShowResponse)
-async def invite_on_project(background_tasks: BackgroundTasks, request: schemas.Collaborator, project_id: int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+async def invite_collaborator(background_tasks: BackgroundTasks, request: schemas.Collaborator, project_id: int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     data = collaboratorRepo.invite(request, project_id, db, tokendata)
     if data['data'] == "old_user_invited":
         body = {
@@ -57,5 +57,5 @@ async def invite_on_project(background_tasks: BackgroundTasks, request: schemas.
 
 
 @router.delete('/collaborator/{project_id}/{id}', status_code=200, response_model=schemas.ShowResponse)
-def delete_project(project_id: int, id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+def remove_collaborator(project_id: int, id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return collaboratorRepo.delete(project_id, id, db, tokendata)

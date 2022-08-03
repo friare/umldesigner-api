@@ -25,10 +25,18 @@ def all_project(db: Session = Depends(database.get_db), tokendata = Depends(oaut
 def get_project(id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return projectRepo.get(id, db, tokendata)
 
-@router.delete('/project/{id}', status_code=200, response_model=schemas.ShowResponse)
+@router.delete('/project/me/{id}', status_code=200, response_model=schemas.ShowResponse)
 def delete_project(id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return projectRepo.delete(id, db, tokendata)
 
-@router.patch('/project/{id}', status_code=200, response_model=schemas.ShowProject)
+@router.patch('/project/me/{id}', status_code=200, response_model=schemas.ShowProject)
 def update_project(request: schemas.Project, id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return projectRepo.update(request, id, db, tokendata)
+
+@router.get('/projects/invite', status_code=200, response_model=List[schemas.ShowProject])
+def invite_project(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+    return projectRepo.get_invite(db, tokendata)
+
+@router.get('/project/invite/{id}', status_code=200, response_model=schemas.ShowProject)
+def get_project(id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+    return projectRepo.get_invite_id(id, db, tokendata)

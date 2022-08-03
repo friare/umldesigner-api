@@ -10,6 +10,10 @@ def get_all(db, tokendata):
     project = db.query(models.Project).filter(models.Project.creator_id == tokendata.id).filter(models.Project.is_active == True).all()
     return project
 
+def get_invite(db, tokendata):
+    project = db.query(models.Project).join(models.Project.collaborators).filter(models.Project.creator_id != tokendata.id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Project.is_active == True).filter(models.Collaborator.is_active == True).all()
+    return project
+
 def create(request, db, tokendata):
     p = db.query(models.Project).filter(models.Project.title  == request.title).filter(models.Project.creator_id  == tokendata.id).filter(models.Project.is_active == True).first()
     if p:
@@ -39,6 +43,12 @@ def get(id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == id).filter(models.Project.creator_id == tokendata.id).filter(models.Project.is_active == True).first()
     if not project:
         raise HTTPException(status_code=404, detail=f"This project do not exist.")
+    return project
+
+def get_invite_id(id, db, tokendata):
+    project = db.query(models.Project).join(models.Project.collaborators).filter(models.Project.id == id).filter(models.Project.creator_id != tokendata.id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Project.is_active == True).filter(models.Collaborator.is_active == True).first()
+    if not project:
+        raise HTTPException(status_code=403, detail=f"You dont have access to this project.")
     return project
 
 def delete(id, db, tokendata):

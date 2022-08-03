@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.datastruct.database import engine
-from app.routers import blog, user, authentication, uml, project, diagram, collaborator, invitation, version
+from app.routers import user, authentication, uml, project, diagram, collaborator, invitation, version
 from app.datastruct import models
 import os
 from dotenv import load_dotenv

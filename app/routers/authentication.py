@@ -13,23 +13,25 @@ router = APIRouter(
     tags=['Auth'],
     prefix='/auth' 
 )
-@router.post('/register',  status_code=201)
+@router.post('/register',  status_code=201, response_model=schemas.ShowResponse)
 async def create(request: schemas.User, db: Session = Depends(database.get_db)):
     user = authRepository.create(request, db)
 
-    # msg = mail.template_new_account.format(request.email, request.email, "https://umldesigner.app/activate-account/"+user.activation_token)
-    msg = mail.template_new_account
+    body = {
+        'email': request.email,
+        'link': mail.ACCOUNT_ACTIVATION_LINK.format(user.activation_token)
+    }
 
     message = mail.MessageSchema(
-        subject="subject",
+        subject="Welcome to UMLDesigner !",
         recipients=[request.email],
-        body=msg,
+        template_body=body,
         subtype="html"
     )
 
     fm = mail.FastMail(mail.conf)
-    await fm.send_message(message)
-    return mail.JSONResponse(status_code=200, content={"detail": "Activate your aaccount in your email box."})
+    await fm.send_message(message, template_name="new_account.html")
+    return mail.JSONResponse(status_code=201, content={"detail": "Activate your aaccount in your email box."})
 
 @router.post('/token')
 async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

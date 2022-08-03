@@ -9,6 +9,38 @@ from datetime import datetime, time, timedelta
 #--------------------------------
 #--------------------------------
 
+class CollaboratorRole(str, Enum):
+    guest      = "INVITE"
+    admin      = "ADMIN"
+
+class CollaboratorPermission(str, Enum):
+    write      = "LECTURE ET ECRITURE"
+    read       = "LECTURE SEULE"
+    admin      = "ADMIN"
+
+class Collaborator(BaseModel):
+    role: CollaboratorRole
+    permission: CollaboratorPermission
+    collaborator_email: str
+
+class ShowCollaborator(BaseModel):
+    id: int
+    role: str
+    permission: str
+    project_id: int
+    user_id: int
+    is_active: int
+
+    class Config():
+        orm_mode = True
+
+class ShowComplexColab(BaseModel):
+    data: str
+    validation_token: str
+    revokation_token: str
+    collaborator: ShowCollaborator
+    
+
 class Diagram(BaseModel):
     label: str = "new diagram"
     plain_text: str = ""
@@ -45,7 +77,7 @@ class ShowProject(BaseModel):
     is_active: bool
     creator_id: int
     diagrams: List[ShowDiagram] = []
-    collaborators: List[ShowDiagram] = []
+    collaborators: List[ShowCollaborator] = []
 
     class Config():
         orm_mode = True
@@ -66,30 +98,6 @@ class ShowUser(BaseModel):
     class Config():
         orm_mode = True
 
-
-class Collaborator(BaseModel):
-    role: str
-    permission: str
-    project_id: int
-    user_id: int
-
-class ShowCollaborator(BaseModel):
-    id: int
-    role: str
-    permission: str
-    project_id: int
-    user_id: int
-    is_active: int
-
-    class Config():
-        orm_mode = True
-
-class ShowComplexColab(BaseModel):
-    data: str
-    validation_token: str
-    revokation_token: str
-    collaborator: ShowCollaborator
-    
 
 #---
 

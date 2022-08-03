@@ -19,6 +19,20 @@ def create(request, db, tokendata):
     db.add(new_project)
     db.commit()
     db.refresh(new_project)
+
+    colab = models.Collaborator(
+        role="ADMIN",
+        permission="ADMIN",
+        project_id=new_project.id,
+        user_id=tokendata.id,
+        validation_token="",
+        revokation_token="",
+        is_active = True
+    )
+    db.add(colab)
+    db.commit()
+    db.refresh(colab)
+
     return new_project 
 
 def get(id, db, tokendata):

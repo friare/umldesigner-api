@@ -11,8 +11,9 @@ from fastapi.encoders import jsonable_encoder
 import re 
 import random
 import string
-s = string.ascii_lowercase
 
+#global var
+s = string.ascii_lowercase
 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 
 def create(request: schemas.User ,db: Session):

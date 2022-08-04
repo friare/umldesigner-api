@@ -11,6 +11,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True, index=True) 
     password = Column(String)
     activation_token = Column(String, nullable=True)
+    password_renewer_token = Column(String, nullable=True)
     disabled = Column(Boolean, default=True)
 
     projects = relationship('Project', back_populates='creator', cascade="all,delete")
@@ -29,21 +30,6 @@ class Project(Base):
     diagrams = relationship('Diagram', back_populates='project', cascade="all,delete")
     collaborators = relationship('Collaborator', back_populates='project', cascade="all,delete")
 
-class Diagram(Base):
-    __tablename__ = "diagrams"
-
-    id = Column(Integer, primary_key=True, index=True)
-    type = Column(String)
-    label = Column(String)
-    plain_text = Column(Text)
-    xml_image = Column(Text)
-    public_acces_token = Column(String)
-    date_creation = Column(DATETIME)
-    author_id = Column(Integer, ForeignKey('users.id'))
-    project_id = Column(Integer, ForeignKey('projects.id'))
-    
-    project = relationship('Project', back_populates='diagrams', cascade="all,delete")
-
 class Collaborator(Base):
     __tablename__ = "collaborators"
 
@@ -58,6 +44,37 @@ class Collaborator(Base):
 
     project = relationship('Project', back_populates='collaborators', cascade="all,delete")
 
+class Diagram(Base):
+    __tablename__ = "diagrams"
+
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String)
+    label = Column(String)
+    plain_text = Column(Text)
+    xml_image = Column(Text)
+    public_acces_token = Column(String)
+    date_creation = Column(DATETIME)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    
+    project = relationship('Project', back_populates='diagrams', cascade="all,delete")
+    versions = relationship('Version', back_populates='diagram', cascade="all,delete")
+
+
+class Version(Base):
+    __tablename__ = "versions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    id_colaborator = Column(Integer, ForeignKey('collaborators.id'))
+    diagram_id = Column(Integer, ForeignKey('diagrams.id'))
+    label = Column(String)
+    date_creation = Column(DATETIME)
+    input_text = Column(Text)
+    xml_image = Column(Text)
+    public_link = Column(Text)
+
+    diagram = relationship('Diagram', back_populates='versions', cascade="all,delete")
+    
 
 class Code(Base):
     __tablename__ = "codes"
@@ -67,18 +84,6 @@ class Code(Base):
     content = Column(String)
     date_creation = Column(DATETIME)
     linked_diagram_id = Column(Integer, ForeignKey('diagrams.id'))
-
-class Version(Base):
-    __tablename__ = "versions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    id_colaborator = Column(Integer, ForeignKey('collaborators.id'))
-    id_diagram = Column(Integer, ForeignKey('diagrams.id'))
-    label = Column(String)
-    date_creation = Column(DATETIME)
-    input_text = Column(Text)
-    xml_image = Column(Text)
-    public_link = Column(Text)
 
 class Alert(Base):
     __tablename__ = "alerts"

@@ -66,6 +66,73 @@ def reject_as_guest(token1, token2, db):
 
 
 
+def all_version(id, db,tokendata):
+    version = db.query(models.Version).join(models.Version.diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
+    return version
+
+def fork(request, db, tokendata):
+    diagram = db.query(models.Diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == request.diagram_id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
+    if len(diagram) <= 0:
+        raise HTTPException(status_code=403, detail='Not allowed.')
+    old_version = db.query(models.Version).filter(models.Version.diagram_id == request.diagram_id).all()
+    main_diagram = db.query(models.Diagram).filter(models.Diagram.id == request.diagram_id).first()
+    if not main_diagram:
+        raise HTTPException(status_code=404, detail='Not Found.')
+    version = models.Version(
+        id_colaborator=tokendata.id,
+        diagram_id=request.diagram_id,
+        label="version-"+str(len(old_version)+1),
+        date_creation=datetime.now(),
+        input_text=main_diagram.plain_text,
+        xml_image=main_diagram.xml_image,
+        public_link=main_diagram.public_acces_token+"version-"+str(len(old_version)+1),
+    )
+    db.add(version)
+    db.commit()
+    db.refresh(version)
+    return version 
+
+def push(id, db, tokendata):
+    #for only admin
+    version = db.query(models.Version).filter(models.Version.id == id)
+    if not version.first():
+        raise HTTPException(status_code=403, detail='Not allowed.')
+
+    diagram = db.query(models.Diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == version.first().diagram_id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Project.creator_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
+    if len(diagram) <= 0:
+        raise HTTPException(status_code=403, detail='Not allowed.')
+    
+    diagram = db.query(models.Diagram).filter(models.Diagram.id == version.first().diagram_id)
+    diagram.update({
+        'plain_text': version.first().input_text,
+        'xml_image': version.first().xml_image
+    })
+    db.commit()
+    return diagram
+
+def edit_version(request, id, db, tokendata):
+    version = db.query(models.Version).filter(models.Version.id == id)
+    if not version.first():
+        raise HTTPException(status_code=403, detail='Not allowed.')
+    #for only admin
+    diagram = db.query(models.Diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == version.first().diagram_id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Project.creator_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
+    print(len(diagram))
+    print(diagram)
+    if len(diagram) <= 0:
+        raise HTTPException(status_code=403, detail='Not allowed.')
+    version = db.query(models.Version).filter(models.Version.id == id)
+    if not version.first():
+        raise HTTPException(status_code=403, detail='Not allowed.')
+    version.update({
+        'input_text': request.input_text,
+        'xml_image': request.xml_image
+    })
+    db.commit()
+    return version
+
+
+
+
 
 
 

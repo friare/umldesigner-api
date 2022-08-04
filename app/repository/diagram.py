@@ -37,6 +37,7 @@ def create(request, project_id, type, db, tokendata):
             db.refresh(new_diagram)
             return new_diagram 
         else:
+            print("oo")
             raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")

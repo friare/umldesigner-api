@@ -73,7 +73,6 @@ def activate(activation_token, db):
     db.commit()
     return u.first()
 
-
 def reset(request: schemas.Password, db: Session, token_str: str):
     payload = jwt.decode(token_str, token.SECRET_KEY, algorithms=[token.ALGORITHM])
     user = db.query(models.User).filter(models.User.email == payload.get('sub')).filter(models.User.disabled == False)
@@ -98,3 +97,33 @@ def user_me(db, tokendata):
     if not user:
         raise HTTPException(status_code=404, detail='Not found')
     return user
+
+def send_reset_password_mail(request, db):
+    user = db.query(models.User).filter(models.User.email == request.email)
+    if not user.first():
+        raise HTTPException(status_code=404, detail='Not found')
+    token = ''
+    while True:
+        token = ''.join(random.choice(s) for i in range(64))
+        d = db.query(models.User).filter(models.User.password_renewer_token  == token).filter(models.User.disabled  == True).first()
+        if not d:
+            break
+    user.update({
+        'disabled': True,
+        'password_renewer_token': token
+    })
+    db.commit()
+    return token
+
+def add_token_blacklisted(token: str) -> bool:
+    with open('./app/security/blacklist.ako', 'a') as file:
+        file.write(f'{token};')
+    return True
+
+def is_token_clacklisted(token: str) -> bool:
+    with open('./app/security/blacklist.ako') as file:
+        content = file.read()
+        array = content[:-1].split(';')
+        if token in array:
+            return True
+    return False

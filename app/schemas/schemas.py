@@ -48,7 +48,7 @@ class Diagram(BaseModel):
 class DiagramUpdate(BaseModel):
     label: str = "new diagram"
     plain_text: str = ""
-    xml_image: str
+    xml_image: str = "<UMLDiagram></UML>"
 
 class ShowDiagram(BaseModel):
     id: int
@@ -66,7 +66,7 @@ class ShowDiagram(BaseModel):
 
 
 class Project(BaseModel):
-    title: str
+    title: str = "uml project"
     description: str
 
 class ShowProject(BaseModel):
@@ -84,8 +84,8 @@ class ShowProject(BaseModel):
 
 
 class User(BaseModel):
-    name: str
-    email: str
+    name: str = "PlumpSparrow"
+    email: str = "example@mail.com"
     password: str
 
 class ShowUser(BaseModel):
@@ -98,6 +98,26 @@ class ShowUser(BaseModel):
     class Config():
         orm_mode = True
 
+
+class Version(BaseModel):
+    diagram_id: int = 2547896
+
+class Version2(BaseModel):
+    input_text: str
+    xml_image: str
+
+class ShowVersion(BaseModel):
+    id: int
+    id_colaborator: int
+    diagram_id: int
+    label: str = "version1.0"
+    date_creation: datetime
+    input_text: str
+    xml_image: str
+    public_link: str
+
+    class Config():
+        orm_mode = True
 
 #---
 

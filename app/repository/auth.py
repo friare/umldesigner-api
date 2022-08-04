@@ -38,6 +38,20 @@ def create(request: schemas.User ,db: Session):
         db.commit()
         db.refresh(new_user)
 
+        #collaborator
+        colab = models.Collaborator(
+            role="INVIITE",
+            permission="LECTURE SEULE",
+            project_id=1,
+            user_id=new_user.id,
+            validation_token="",
+            revokation_token="",
+            is_active = True
+        )
+        db.add(colab)
+        db.commit()
+        db.refresh(colab)
+
         #return user
         return new_user
     except Exception as e:

@@ -13,6 +13,7 @@ router = APIRouter(
     tags=['Auth'],
     prefix='/auth' 
 )
+
 @router.post('/register',  status_code=201, response_model=schemas.ShowResponse)
 async def create(request: schemas.User, db: Session = Depends(database.get_db)):
     user = authRepository.create(request, db)

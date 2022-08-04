@@ -41,6 +41,27 @@ class ShowComplexColab(BaseModel):
     collaborator: ShowCollaborator
     
 
+class Version(BaseModel):
+    diagram_id: int = 1
+
+class Version2(BaseModel):
+    input_text: str
+    xml_image: str
+
+class ShowVersion(BaseModel):
+    id: int
+    id_colaborator: int
+    diagram_id: int
+    label: str = "version1.0"
+    date_creation: datetime
+    input_text: str
+    xml_image: str
+    public_link: str
+
+    class Config():
+        orm_mode = True
+
+
 class Diagram(BaseModel):
     label: str = "new diagram"
     plain_text: str = ""
@@ -60,6 +81,7 @@ class ShowDiagram(BaseModel):
     date_creation: datetime
     author_id: int
     project_id: int
+    versions: List[ShowVersion] = []
 
     class Config():
         orm_mode = True
@@ -82,44 +104,6 @@ class ShowProject(BaseModel):
     class Config():
         orm_mode = True
 
-
-class User(BaseModel):
-    name: str = "PlumpSparrow"
-    email: str = "example@mail.com"
-    password: str
-
-class ShowUser(BaseModel):
-    id: int
-    name: str
-    email: str
-    projects: List[ShowProject] = []
-    # alerts: List[Alert] = []
-
-    class Config():
-        orm_mode = True
-
-
-class Version(BaseModel):
-    diagram_id: int = 1
-
-class Version2(BaseModel):
-    input_text: str
-    xml_image: str
-
-class ShowVersion(BaseModel):
-    id: int
-    id_colaborator: int
-    diagram_id: int
-    label: str = "version1.0"
-    date_creation: datetime
-    input_text: str
-    xml_image: str
-    public_link: str
-
-    class Config():
-        orm_mode = True
-
-
 class Alert(BaseModel):
     alert_id: int = 1
 
@@ -136,6 +120,20 @@ class ShowAlert(BaseModel):
     class Config():
         orm_mode = True
 
+class User(BaseModel):
+    name: str = "PlumpSparrow"
+    email: str = "example@mail.com"
+    password: str
+
+class ShowUser(BaseModel):
+    id: int
+    name: str
+    email: str
+    projects: List[ShowProject] = []
+    alerts: List[ShowAlert] = []
+
+    class Config():
+        orm_mode = True
 
 #---
 

@@ -45,18 +45,24 @@ def create(request, project_id, type, db, tokendata):
 def get_all(project_id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
     if project:
-        if int(project.creator_id) == int(tokendata.id):
+        collaborator = db.query(models.Collaborator.user_id).filter(models.Collaborator.project_id == project_id).filter(models.Collaborator.is_active == True).all()
+        authorise = [item for item in collaborator if int(tokendata.id) in item]
+        if len(authorise) == 1:
+        # if int(project.creator_id) == int(tokendata.id):
             diagrams = db.query(models.Diagram).filter(models.Diagram.project_id  == project_id).all()
             return diagrams 
         else:
             raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
     else:
-        raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
+        raise HTTPException(status_code=404, detail=f"Not Found")
 
 def get(project_id, id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
     if project:
-        if int(project.creator_id) == int(tokendata.id):
+        collaborator = db.query(models.Collaborator.user_id).filter(models.Collaborator.project_id == project_id).filter(models.Collaborator.is_active == True).all()
+        authorise = [item for item in collaborator if int(tokendata.id) in item]
+        if len(authorise) == 1:
+        # if int(project.creator_id) == int(tokendata.id):
             diagrams = db.query(models.Diagram).filter(models.Diagram.project_id  == project_id).filter(models.Diagram.id  == id).first()
             return diagrams 
         else:

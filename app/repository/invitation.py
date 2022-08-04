@@ -47,6 +47,21 @@ def signup_and_accept(request, token1, token2, db):
     })
 
     db.commit()
+
+    #collaborator
+    colab = models.Collaborator(
+        role="INVIITE",
+        permission="LECTURE SEULE",
+        project_id=1,
+        user_id=user.id,
+        validation_token="",
+        revokation_token="",
+        is_active = True
+    )
+    db.add(colab)
+    db.commit()
+    db.refresh(colab)
+
     return {'detail': 'Geat ! Everything okay.'}
 
 def reject_as_guest(token1, token2, db):

@@ -6,66 +6,6 @@ from ..security.hashing import Hash
 from datetime import datetime, time, timedelta
 
 
-def accept(token, db):
-    collaborator = db.query(models.Collaborator).filter(models.Collaborator.validation_token == token).filter(models.Collaborator.is_active == False)
-    if not collaborator.first():
-        raise HTTPException(status_code=404, detail='Not Found.')
-    collaborator.update({
-        'validation_token': '',
-        'revokation_token': '',
-        'is_active': True,
-    })
-    db.commit()
-    return {'detail': 'You have acces to this project now.'}
-
-def reject_as_user(token, db):
-    collaborator = db.query(models.Collaborator).filter(models.Collaborator.revokation_token == token).filter(models.Collaborator.is_active == False)
-    if not collaborator.first():
-        raise HTTPException(status_code=404, detail='Not Found.')
-    collaborator.delete(synchronize_session=False)
-    db.commit()
-    return {'detail': 'Rejection set with success.'}
-
-
-def signup_and_accept(request, token1, token2, db):
-    collaborator = db.query(models.Collaborator).filter(models.Collaborator.validation_token == token1).filter(models.Collaborator.is_active == False)
-    user = db.query(models.User).filter(models.User.activation_token == token2).filter(models.User.disabled == True)
-    if (not collaborator.first()) or (not user.first()):
-        raise HTTPException(status_code=404, detail='Not Found.')
-
-    user.update({
-        'name': request.name,
-        'password': Hash.bcrypt(request.password),
-        'activation_token': '',
-        'disabled': False
-    })
-
-    collaborator.update({
-        'validation_token': '',
-        'revokation_token': '',
-        'is_active': True,
-    })
-
-    db.commit()
-    return {'detail': 'Geat ! Everything okay.'}
-
-def reject_as_guest(token1, token2, db):
-    collaborator = db.query(models.Collaborator).filter(models.Collaborator.revokation_token == token1).filter(models.Collaborator.is_active == False)
-    user = db.query(models.User).filter(models.User.activation_token == token2).filter(models.User.disabled == True)
-    if (not collaborator.first()) or (not user.first()):
-        raise HTTPException(status_code=404, detail='Not Found.')
-    collaborator.delete(synchronize_session=False)
-    db.commit()
-    user.delete(synchronize_session=False)
-    db.commit()
-    return {'detail': 'Rejection set with success.'}
-
-
-
-
-
-
-
 def all_version(id, db,tokendata):
     version = db.query(models.Version).join(models.Version.diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
     return version
@@ -85,7 +25,7 @@ def fork(request, db, tokendata):
         date_creation=datetime.now(),
         input_text=main_diagram.plain_text,
         xml_image=main_diagram.xml_image,
-        public_link=main_diagram.public_acces_token+"version-"+str(len(old_version)+1),
+        public_link=main_diagram.public_acces_token+"-version-"+str(len(old_version)+1),
     )
     db.add(version)
     db.commit()
@@ -108,27 +48,25 @@ def push(id, db, tokendata):
         'xml_image': version.first().xml_image
     })
     db.commit()
-    return diagram
+    return diagram.first()
 
 def edit_version(request, id, db, tokendata):
     version = db.query(models.Version).filter(models.Version.id == id)
     if not version.first():
         raise HTTPException(status_code=403, detail='Not allowed.')
-    #for only admin
-    diagram = db.query(models.Diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == version.first().diagram_id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Project.creator_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
+
+    diagram = db.query(models.Diagram).join(models.Diagram.project).join(models.Project.collaborators).filter(models.Diagram.id == version.first().diagram_id).filter(models.Collaborator.user_id == tokendata.id).filter(models.Collaborator.is_active == True).all()
     print(len(diagram))
     print(diagram)
     if len(diagram) <= 0:
         raise HTTPException(status_code=403, detail='Not allowed.')
-    version = db.query(models.Version).filter(models.Version.id == id)
-    if not version.first():
-        raise HTTPException(status_code=403, detail='Not allowed.')
+
     version.update({
         'input_text': request.input_text,
         'xml_image': request.xml_image
     })
     db.commit()
-    return version
+    return version.first()
 
 
 

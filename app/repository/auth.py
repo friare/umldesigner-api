@@ -46,12 +46,12 @@ def create(request: schemas.User ,db: Session):
    
 def login(request, db: Session):
     user = db.query(models.User).filter(models.User.email == request.username).first()
-
-    if user.disabled:
-        raise HTTPException(status_code=401, detail='Account disabled. Please activate it in your mail address.')
  
     if (not user) or (not Hash.verify(user.password, request.password)):
         raise HTTPException(status_code=401, detail='Invalid credentials')
+
+    if user.disabled:
+        raise HTTPException(status_code=401, detail='Account disabled. Please activate it in your mail address.')
 
     access_token_expires = timedelta(minutes=token.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = token.create_access_token(

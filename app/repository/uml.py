@@ -3,9 +3,9 @@ from fastapi import status, HTTPException, status
 from ..datastruct import models
 from ..schemas import schemas
 from ..security.hashing import Hash
-# from ..nlp_ai import core as ai
-# from ..nlp_ai import trace as trace
-# from ..nlp_ai import xmlBuilder as xmlTools
+from ..nlp_ai import core as ai
+from ..nlp_ai import trace as trace
+from ..nlp_ai import xmlBuilder as xmlTools
 
 def toClassDigramXML(request: schemas.UMLText):
     try:
@@ -30,8 +30,7 @@ def toClassDigramXML(request: schemas.UMLText):
     except Exception as e:
         trace.save_log(request.text, e)
         raise HTTPException(status_code=500, detail='NLP Pipline code error')
-        return "AN ERROR OCCUR"
-   
+        return {'detail': 'An error occur'}   
 
 def toClassDigramOBJ(request: schemas.UMLText):
     try:
@@ -52,7 +51,7 @@ def toClassDigramOBJ(request: schemas.UMLText):
     except Exception as e:
         trace.save_log(request.text, e)
         raise HTTPException(status_code=500, detail='NLP Pipline code error')
-        return "AN ERROR OCCUR"
+        return {'detail': 'An error occur'}  
 
 def sentenceSplit(request: schemas.UMLText):
     try:
@@ -71,7 +70,7 @@ def sentenceSplit(request: schemas.UMLText):
     except Exception as e:
         trace.save_log(request.text, e)
         raise HTTPException(status_code=500, detail='NLP Pipline code error')
-        return "AN ERROR OCCUR"
+        return {'detail': 'An error occur'}   
 
 def stanzaPipeline(request: schemas.UMLText):
     try:
@@ -86,4 +85,4 @@ def stanzaPipeline(request: schemas.UMLText):
     except Exception as e:
         trace.save_log(request.text, e)
         raise HTTPException(status_code=500, detail='NLP Pipline code error')
-        return "AN ERROR OCCUR"
+        return {'detail': 'An error occur'}   

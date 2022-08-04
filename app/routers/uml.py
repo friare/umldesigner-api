@@ -9,7 +9,7 @@ router = APIRouter(
     tags=['Uml']
 )
 
-@router.post('/class-diagram-xml/',  status_code=200)
+@router.post('/class-diagram-xml/',  status_code=200, response_model=schemas.ShowUMLSchema)
 def class_diagram(request: schemas.UMLText):
     return umlRepository.toClassDigramXML(request)
 

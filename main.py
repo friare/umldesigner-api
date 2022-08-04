@@ -26,10 +26,8 @@ app.include_router(invitation.router)
 app.include_router(diagram.router)
 app.include_router(version.router)
 app.include_router(alert.router)
+app.include_router(uml.router)
 app.include_router(seeder.router)
-
-# app.include_router(uml.router)
-# app.include_router(user.router)
 
 #main
 if __name__ == "__main__":

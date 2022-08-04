@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.datastruct.database import engine
-from app.routers import user, authentication, uml, project, diagram, collaborator, invitation, version
+from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert
 from app.datastruct import models
 import os
 from dotenv import load_dotenv
@@ -20,6 +20,7 @@ app.include_router(collaborator.router)
 app.include_router(invitation.router)
 app.include_router(diagram.router)
 app.include_router(version.router)
+app.include_router(alert.router)
 
 # app.include_router(uml.router)
 # app.include_router(user.router)

@@ -42,7 +42,6 @@ def create(request, project_id, type, db, tokendata):
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
 
-
 def get_all(project_id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
     if project:
@@ -54,8 +53,6 @@ def get_all(project_id, db, tokendata):
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
 
-
-
 def get(project_id, id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
     if project:
@@ -66,8 +63,6 @@ def get(project_id, id, db, tokendata):
             raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
-
-
 
 def delete(project_id, id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
@@ -96,8 +91,3 @@ def update(project_id, id, request, db, tokendata):
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
 
-    
-
-# def invited_project(db, tokendata):
-#     project = db.query(models.Project).filter(models.Project.creator_id == tokendata.id).filter(models.Project.is_active == True).all()
-#     return project

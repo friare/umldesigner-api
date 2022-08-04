@@ -100,7 +100,7 @@ class ShowUser(BaseModel):
 
 
 class Version(BaseModel):
-    diagram_id: int = 2547896
+    diagram_id: int = 1
 
 class Version2(BaseModel):
     input_text: str
@@ -118,6 +118,24 @@ class ShowVersion(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+class Alert(BaseModel):
+    alert_id: int = 1
+
+class ShowAlert(BaseModel):
+    id: int
+    type: str
+    id_version: int
+    project_owner_id: int
+    id_project: int
+    label: str = "version1.0"
+    date_update: datetime
+    already_read: bool
+
+    class Config():
+        orm_mode = True
+
 
 #---
 
@@ -141,6 +159,7 @@ class Email(BaseModel):
 
 #--------------------------------
 #--------------------------------
+
 
 
 class BlogBase(BaseModel):

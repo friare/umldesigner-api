@@ -15,6 +15,7 @@ class User(Base):
     disabled = Column(Boolean, default=True)
 
     projects = relationship('Project', back_populates='creator', cascade="all,delete")
+    alerts = relationship('Alert', back_populates='project_owner', cascade="all,delete")
 
 class Project(Base): 
     __tablename__ = 'projects'
@@ -75,6 +76,20 @@ class Version(Base):
 
     diagram = relationship('Diagram', back_populates='versions', cascade="all,delete")
     
+class Alert(Base):
+    __tablename__ = "alerts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String, default="Nouvelle version")
+    label = Column(String, default="Version1.0")
+    id_version = Column(Integer, ForeignKey('versions.id'))
+    project_owner_id = Column(Integer, ForeignKey('users.id'))
+    id_project = Column(Integer, ForeignKey('projects.id'))
+    date_update = Column(DATETIME)
+    already_read = Column(Boolean, default=False)
+
+    project_owner = relationship('User', back_populates='alerts', cascade="all,delete")
+    
 
 class Code(Base):
     __tablename__ = "codes"
@@ -85,11 +100,3 @@ class Code(Base):
     date_creation = Column(DATETIME)
     linked_diagram_id = Column(Integer, ForeignKey('diagrams.id'))
 
-class Alert(Base):
-    __tablename__ = "alerts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    id_version = Column(Integer, ForeignKey('versions.id'))
-    id_utilisateur = Column(Integer, ForeignKey('users.id'))
-    id_project = Column(Integer, ForeignKey('projects.id'))
-    already_read = Column(Boolean, default=True)

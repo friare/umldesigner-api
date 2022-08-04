@@ -31,7 +31,7 @@ async def create(request: schemas.User, db: Session = Depends(database.get_db)):
 
     fm = mail.FastMail(mail.conf)
     await fm.send_message(message, template_name="new_account.html")
-    return mail.JSONResponse(status_code=201, content={"detail": "Activate your aaccount in your email box."})
+    return mail.JSONResponse(status_code=201, content={"detail": "Activate your account in your email box."})
 
 @router.post('/token')
 async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

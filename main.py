@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.datastruct.database import engine
-from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert
+from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert, websocket, index
 from app.datastruct import models, database
 from dotenv import load_dotenv
 from app.seeder import seeder
@@ -27,6 +27,8 @@ app.include_router(diagram.router)
 app.include_router(version.router)
 app.include_router(alert.router)
 app.include_router(uml.router)
+app.include_router(websocket.router)
+app.include_router(index.router)
 app.include_router(seeder.router)
 
 #main

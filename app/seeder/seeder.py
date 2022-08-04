@@ -86,6 +86,6 @@ async def init_db(db: Session = Depends(database.get_db)):
         db.add(new_diagram)
         db.commit()
         db.refresh(new_diagram)
-        return {'detail': 'Pipline: init cobra db  - DONE'}
+        return {'detail': 'PIPLINE: ALL TASKS DONE'}
     else:
-        return {'detail': 'This is not Admin device. Report sent to Admin.'}
+        return {'detail': 'This request does not come from a device registered in the authorized device list for the admin.'}

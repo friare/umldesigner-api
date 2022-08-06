@@ -12,3 +12,4 @@ stanza
 nltk
 pyspellchecker
 pandas
+

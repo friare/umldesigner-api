@@ -3,9 +3,9 @@ from fastapi import status, HTTPException, status
 from ..datastruct import models
 from ..schemas import schemas
 from ..security.hashing import Hash
-from ..nlp_ai import core as ai
-from ..nlp_ai import trace as trace
-from ..nlp_ai import xmlBuilder as xmlTools
+#from ..nlp_ai import core as ai
+#from ..nlp_ai import trace as trace
+#from ..nlp_ai import xmlBuilder as xmlTools
 
 def toClassDigramXML(request: schemas.UMLText):
     try:

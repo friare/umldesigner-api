@@ -22,15 +22,15 @@ async def init_db(db: Session = Depends(database.get_db)):
     #variables
     s = string.ascii_lowercase
     load_dotenv('.env')
-    ADMIN_NAME                          = os.getenv('ADMIN_NAME')
+    ADMIN_NAME                          = "Admin"
     ADMIN_EMAIL                         = os.getenv('ADMIN_EMAIL')
     ADMIN_PASSWORD                      = os.getenv('ADMIN_PASSWORD')
-    ADMIN_DEFAULT_PROJECT_NAME          = os.getenv('ADMIN_DEFAULT_PROJECT_NAME')
-    ADMIN_DEFAULT_PROJECT_DESCRIPTION   = os.getenv('ADMIN_DEFAULT_PROJECT_DESCRIPTION')
-    ADMIN_DEFAULT_DIAGRAM_LABEL         = os.getenv('ADMIN_DEFAULT_DIAGRAM_LABEL')
-    ADMIN_DEFAULT_DIAGRAM_TEXT          = os.getenv('ADMIN_DEFAULT_DIAGRAM_TEXT')
-    ADMIN_DEFAULT_DIAGRAM_XML           = os.getenv('ADMIN_DEFAULT_DIAGRAM_XML')
-    ADMIN_DEFAULT_DIAGRAM_TYPE          = os.getenv('ADMIN_DEFAULT_DIAGRAM_TYPE')
+    ADMIN_DEFAULT_PROJECT_NAME          = "Default"
+    ADMIN_DEFAULT_PROJECT_DESCRIPTION   = "UMDDesigner  app class diagram"
+    ADMIN_DEFAULT_DIAGRAM_LABEL         = "umldesigner-app-class-diagram"
+    ADMIN_DEFAULT_DIAGRAM_TEXT          = "text"
+    ADMIN_DEFAULT_DIAGRAM_XML           = "<UMLClassDiagram></UMLClassDiagram>"
+    ADMIN_DEFAULT_DIAGRAM_TYPE          = "CLASS"
 
     #pipline   
     user = db.query(models.User).filter(models.User.email == ADMIN_EMAIL).first()

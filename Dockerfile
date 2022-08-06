@@ -7,6 +7,14 @@ COPY ./main.py /app/main.py
 COPY ./database.db /app/database.db
 COPY ./requirements.txt /app/requirements.txt
 
+ARG MAIL_USERNAME=null
+ARG MAIL_PASSWORD=null
+ARG MAIL_FROM=null
+ARG MAIL_PORT=null
+ARG MAIL_SERVER=null
+ARG ADMIN_EMAIL=null
+ARG ADMIN_PASSWORD=null
+
 # set the working directory in the container to be /app
 WORKDIR /app
 SHELL ["/bin/bash", "-c"] 
@@ -18,7 +26,16 @@ RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # expose the port that uvicorn will run the app on
+ENV HOST=127.0.0.1
 ENV PORT=8000
+ENV AUTO_RELOAD=True
+ENV MAIL_USERNAME=$MAIL_USERNAME
+ENV MAIL_PASSWORD=$MAIL_PASSWORD
+ENV MAIL_FROM=$MAIL_FROM
+ENV MAIL_PORT=$MAIL_PORT
+ENV MAIL_SERVER=$MAIL_SERVER
+ENV ADMIN_EMAIL=$ADMIN_EMAIL
+ENV ADMIN_PASSWORD=$ADMIN_PASSWORD
 EXPOSE 8000
 
 # execute the command python main.py (in the WORKDIR) to start the app

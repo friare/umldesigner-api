@@ -3,7 +3,7 @@ from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from . import token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/swagger/token")
 
 async def get_current_user(token_data: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(

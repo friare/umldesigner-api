@@ -39,6 +39,7 @@ class Collaborator(Base):
     permission = Column(String)
     project_id = Column(Integer, ForeignKey('projects.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
+    user_name = Column(String)
     validation_token = Column(String)
     revokation_token = Column(String)
     is_active = Column(Boolean, default=False)

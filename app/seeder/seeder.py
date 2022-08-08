@@ -64,6 +64,7 @@ async def init_db(db: Session = Depends(database.get_db)):
             permission="ADMIN",
             project_id=new_project.id,
             user_id=new_user.id,
+            user_name=new_user.name,
             validation_token="",
             revokation_token="",
             is_active = True

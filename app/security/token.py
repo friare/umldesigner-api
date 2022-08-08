@@ -22,7 +22,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def verify_token(token: str, credentials_exception):
     try:
-        if auth.is_token_clacklisted(token):
+        if auth.is_token_blacklisted(token):
+            print('---------\n---------\n----------\n----------\n--------')
             raise credentials_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

@@ -52,6 +52,7 @@ def invite(request, project_id, db, tokendata):
             permission=request.permission,
             project_id=project_id,
             user_id=new_user.id,
+            user_name=new_user.name,
             validation_token='uvk'+token2,
             revokation_token='urk'+token2
         )
@@ -80,6 +81,7 @@ def invite(request, project_id, db, tokendata):
             permission=request.permission,
             project_id=project_id,
             user_id=user.id,
+            user_name=user.name,
             validation_token='uvk'+token,
             revokation_token='urk'+token
         )

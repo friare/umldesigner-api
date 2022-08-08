@@ -44,6 +44,7 @@ def create(request: schemas.User ,db: Session):
             permission="LECTURE SEULE",
             project_id=1,
             user_id=new_user.id,
+            user_name=new_user.name,
             validation_token="",
             revokation_token="",
             is_active = True
@@ -59,6 +60,9 @@ def create(request: schemas.User ,db: Session):
         raise HTTPException(status_code=400, detail='Bad Request. Email already taken.')
    
 def login(request, db: Session):
+    if not re.search(regex, request.username):
+        raise HTTPException(status_code=400, detail='Incorrect email')
+        
     user = db.query(models.User).filter(models.User.email == request.username).first()
  
     if (not user) or (not Hash.verify(user.password, request.password)):
@@ -80,7 +84,7 @@ def login(request, db: Session):
     return {"access_token": access_token, "token_type": "bearer"}
 
 def activate(activation_token, db):
-    user = u = db.query(models.User).filter(models.User.activation_token == activation_token).filter(models.User.disabled == True)
+    user = u = db.query(models.User).filter(models.User.activation_token == activation_token.token).filter(models.User.disabled == True)
     if not user.first():
         raise HTTPException(status_code=404, detail=f"This resource no longer exist.")
     user.update({'activation_token':'', 'disabled':False})
@@ -105,6 +109,18 @@ def reset(request: schemas.Password, db: Session, token_str: str):
     user.update(jsonable_encoder({'password': Hash.bcrypt(request.new_password)}))
     db.commit()
     return user
+
+def guest_reset(request, db):
+    user = db.query(models.User).filter(models.User.password_renewer_token == request.reset_token).filter(models.User.disabled == True)
+    if not user.first():
+        raise HTTPException(status_code=403, detail='Accès non autorisé à cette ressource.')
+    user.update({
+        'password': Hash.bcrypt(request.new_password),
+        'password_renewer_token': '',
+        'disabled': False
+    })
+    db.commit()
+    return {'detail': 'Mot de passe réinitialisé avec succès.'}
 
 def user_me(db, tokendata):
     user = db.query(models.User).filter(models.User.email == tokendata.email).filter(models.User.disabled == False).first()
@@ -134,10 +150,14 @@ def add_token_blacklisted(token: str) -> bool:
         file.write(f'{token};')
     return True
 
-def is_token_clacklisted(token: str) -> bool:
+def is_token_blacklisted(token: str) -> bool:
     with open('./app/security/blacklist.ako') as file:
         content = file.read()
         array = content[:-1].split(';')
+        print(array)
+        print('array')
+        print(token)
+        print('token')
         if token in array:
             return True
     return False

@@ -34,23 +34,17 @@ async def create(request: schemas.User, db: Session = Depends(database.get_db)):
     await fm.send_message(message, template_name="new_account.html")
     return mail.JSONResponse(status_code=201, content={"detail": "Activate your account in your email box."})
 
-@router.post('/token')
-async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
-    return authRepository.login(request, db)
-
-@router.get('/activate/{token}', response_model=schemas.ShowUser)
-async def activate(activation_token: str, db: Session = Depends(database.get_db)):
+@router.post('/activate', response_model=schemas.ShowUser)
+async def activate(activation_token: schemas.ActivationToken, db: Session = Depends(database.get_db)):
     return authRepository.activate(activation_token, db)
 
-@router.get('/logout', status_code=200, response_model=schemas.ShowResponse)
-async def logout(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
-    authRepository.add_token_blacklisted(token)
-    return {'detail': 'Access Token destroyed. Session closed.'}
-    
+@router.post('/token', status_code=200)
+async def login(request: schemas.Login, db: Session = Depends(database.get_db)):
+    return authRepository.login(request, db)
 
-@router.patch('/reset-password')
-def reset(request: schemas.Password, db: Session = Depends(database.get_db), token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
-    return authRepository.reset(request, db, token)
+@router.post('/swagger/token', status_code=200, include_in_schema=False)
+async def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+    return authRepository.login(request, db)
 
 @router.post('/forget-password', response_model=schemas.ShowResponse)
 async def reset(request: schemas.Email, db: Session = Depends(database.get_db)):
@@ -71,6 +65,19 @@ async def reset(request: schemas.Email, db: Session = Depends(database.get_db)):
     fm = mail.FastMail(mail.conf)
     await fm.send_message(message, template_name="change_password.html")
     return mail.JSONResponse(status_code=200, content={"detail": "Email sent to your mail box."})
+
+@router.post('/reset-password', response_model=schemas.ShowResponse, status_code=200)
+def guest_reset(request: schemas.ChangePassword, db: Session = Depends(database.get_db)):
+    return authRepository.guest_reset(request, db)
+
+@router.delete('/logout', status_code=200, response_model=schemas.ShowResponse)
+async def logout(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
+    authRepository.add_token_blacklisted(token)
+    return {'detail': 'Access Token destroyed. Session closed.'}
+
+@router.patch('/reset-password')
+def reset(request: schemas.Password, db: Session = Depends(database.get_db), token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
+    return authRepository.reset(request, db, token)
 
 @router.get('/user/me', response_model=schemas.ShowUser, status_code=200)
 async def user_me(db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):

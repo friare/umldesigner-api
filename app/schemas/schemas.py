@@ -29,6 +29,7 @@ class ShowCollaborator(BaseModel):
     permission: str
     project_id: int
     user_id: int
+    user_name: str
     is_active: int
 
     class Config():
@@ -153,6 +154,8 @@ class ShowResponse(BaseModel):
 class Email(BaseModel):
     email: str = "example@mail.com"
 
+class ActivationToken(BaseModel):
+    token: str = "bj45dcd7s5dazdz8aszxzxa"
 #---
 
 #--------------------------------
@@ -169,6 +172,9 @@ class Password(BaseModel):
     old_password: str
     new_password: str
 
+class ChangePassword(BaseModel):
+    reset_token: str
+    new_password: str
 
 class Blog(BlogBase):
     class Config():

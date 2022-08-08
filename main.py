@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.datastruct.database import engine
 from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert, websocket, index
 from app.datastruct import models, database
@@ -14,6 +15,20 @@ app = FastAPI(
     description="An API for an AI-based uml diagram development assistant that processes technical specifications in natural language using NLP tools and return an xml file discribing generated uml schema structure."
 )
 models.Base.metadata.create_all(engine)
+
+#cross origin
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    ""
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #seeder
 # seeder.init_db(next(database.get_db))

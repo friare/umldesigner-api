@@ -7,7 +7,7 @@ from ..repository import auth
 
 SECRET_KEY = "d5931bf879a3cbacace54c759f28f707bce8384d9231c6e206c2fb7886faded0"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

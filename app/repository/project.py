@@ -29,6 +29,7 @@ def create(request, db, tokendata):
         permission="ADMIN",
         project_id=new_project.id,
         user_id=tokendata.id,
+        user_name=tokendata.name,
         validation_token="",
         revokation_token="",
         is_active = True

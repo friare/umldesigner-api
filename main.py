@@ -9,6 +9,9 @@ import uvicorn
 import os
 
 #init
+host = os.getenv('HOST')
+port = int(os.getenv('PORT'))
+reload_type = os.getenv('AUTO_RELOAD')
 load_dotenv()
 app = FastAPI(
     title="UMLDesigner API",
@@ -48,6 +51,6 @@ app.include_router(seeder.router)
 
 #main
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=os.getenv('HOST'), port=int(os.getenv('PORT')), reload=os.getenv('AUTO_RELOAD'))
+    uvicorn.run("main:app", host=host, port=port, reload=reload_type)
 
  

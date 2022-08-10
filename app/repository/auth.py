@@ -98,15 +98,9 @@ def reset(request: schemas.Password, db: Session, token_str: str):
     if not Hash.verify(user.first().password, request.old_password):
         raise HTTPException(status_code=403, detail='Incorrect password')
 
-    # stored_item_data = items[item_id]
-    # user_model = models.User(**user.first())
-    # update_data = item.dict(exclude_unset=True)
-    # updated_item = stored_item_model.copy(update=update_data)
-    # items[item_id] = jsonable_encoder(updated_item)
-    # return updated_item
-
-    jsonable_encoder(models.User)
-    user.update(jsonable_encoder({'password': Hash.bcrypt(request.new_password)}))
+    user.update({
+        'password': Hash.bcrypt(request.new_password)
+    })
     db.commit()
     return user
 

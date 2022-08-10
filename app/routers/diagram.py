@@ -30,6 +30,10 @@ def get_all(project_id:int, db: Session = Depends(database.get_db), tokendata = 
 def get(project_id:int, id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return diagramRepo.get(project_id, id, db, tokendata)
 
+@router.get('/diagram/{token}', status_code=200, response_model=schemas.ShowDiagram)
+def get(token: str, db: Session = Depends(database.get_db)):
+    return diagramRepo.publicGet(token, db)
+
 @router.delete('/diagram/{project_id}/{id}', status_code=200, response_model=schemas.ShowResponse)
 def delete_diagram(project_id: int, id:int, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return diagramRepo.delete(project_id, id, db, tokendata)

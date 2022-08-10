@@ -343,7 +343,8 @@ def main(data):
     if rootNodeTag != None:
         tree, treeWidth = treeNodePosition(data['allNodes'], data['relation'], rootNodeTag)
         tree.x = abs(int(treeWidth[0]/2)-int(getTableOffset(tree.label, data['allNodes'])[0]/2))
-        tree.x = 30
+        tree.x = 100
+        tree.y = 40
         treeTraveler(tree, data['allNodes'])
     xml = xmlGenerator(diagramTypeTag.UMLClassDiagram, data)
     return xml

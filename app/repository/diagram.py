@@ -70,6 +70,12 @@ def get(project_id, id, db, tokendata):
     else:
         raise HTTPException(status_code=403, detail=f"You're neither author nor collaborator on this project.")
 
+def publicGet(token, db):
+    diagram = db.query(models.Diagram).filter(models.Diagram.public_acces_token  == token).first()
+    if not diagram:
+        raise HTTPException(status_code=404, detail=f"Cette ressource n'existe plus")
+    return diagram
+
 def delete(project_id, id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.is_active == True).first()
     if project:

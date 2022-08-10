@@ -31,7 +31,7 @@ jobs:
      
     - name: Build and push container image to registry 
       run: |
-        docker build . -t udaapi.azurecr.io/uml-extractor-api:${{ github.sha }}
+        docker build . -t udaapi.azurecr.io/uml-extractor-api:${{ github.sha }} --build-arg MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} --build-arg MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} --build-arg MAIL_SERVER=${{ secrets.MAIL_SERVER }} --build-arg ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} --build-arg ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
         docker push udaapi.azurecr.io/uml-extractor-api:${{ github.sha }}
         
         

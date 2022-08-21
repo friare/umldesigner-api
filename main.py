@@ -9,10 +9,10 @@ import uvicorn
 import os
 
 #init
-host = os.getenv('HOST')
-port = int(os.getenv('PORT'))
-reload_type = os.getenv('AUTO_RELOAD')
-load_dotenv()
+#host = os.getenv('HOST')
+#port = int(os.getenv('PORT'))
+#reload_type = os.getenv('AUTO_RELOAD')
+#load_dotenv()
 app = FastAPI(
     title="UMLDesigner API",
     description="An API for an AI-based uml diagram development assistant that processes technical specifications in natural language using NLP tools and return an xml file discribing generated uml schema structure."
@@ -51,6 +51,6 @@ app.include_router(seeder.router)
 
 #main
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=host, port=port, reload=reload_type)
+    uvicorn.run("main:app", host='0.0.0.0', port='8000')
 
  

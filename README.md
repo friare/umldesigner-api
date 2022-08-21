@@ -1,11 +1,14 @@
 ## UML Dev Asistant / API
-by Généreux
 
 ### RUN
-source api-env/bin/activate
-pip3 install -r requirements.txt
-uvicorn app.main:app --port 8000 --reload
-
+```bash
+docker-compose up --build -d
+```
 ### PAGE
-localhost:8000/docs
-localhost:8000/redoc
+[http://ec2-54-157-98-43.compute-1.amazonaws.com/docs
+](http://ec2-54-157-98-43.compute-1.amazonaws.com/docs
+)
+
+[http://ec2-54-157-98-43.compute-1.amazonaws.com/redoc
+](http://ec2-54-157-98-43.compute-1.amazonaws.com/redoc
+)

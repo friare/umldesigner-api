@@ -1,5 +1,5 @@
 from fastapi import Depends,HTTPException, status
-from jose import JWTError, jwt
+import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from . import token
 

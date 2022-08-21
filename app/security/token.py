@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from jose import JWTError, jwt
+import jwt
 from ..schemas import schemas
 from ..repository import auth
 
@@ -34,5 +34,5 @@ def verify_token(token: str, credentials_exception):
             raise credentials_exception
         token_data = schemas.TokenData(id=id, disabled=disabled, name=name, email=email)
         return token_data
-    except JWTError:
+    except jwt.JWTError:
         raise credentials_exception

@@ -5,7 +5,7 @@ from ..schemas import schemas
 from ..security import token
 from ..security.hashing import Hash
 from datetime import datetime, timedelta
-from jose import jwt
+import jwt
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.encoders import jsonable_encoder
 import re 

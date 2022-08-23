@@ -56,7 +56,7 @@ def xmlGenerator(type: Enum, data: dict):
 
     # Set relation for diagram
     for relationData in data['relation']:
-        if relationData['type'] == relationType.ASSOCIATION.name:
+        if (relationData['type'] == relationType.ASSOCIATION.name) or (relationData['type'] == relationType.RASSOCIATION.name):
             relation = root.createElement(relationType.ASSOCIATION.value)
             relation.setAttribute('id', relationData['t1'] + relationData['t2'])
             relation.setAttribute('side_A', relationData['t1'])
@@ -86,8 +86,47 @@ def xmlGenerator(type: Enum, data: dict):
             # add relation
             xml.appendChild(relation)
         elif relationData['type'] == relationType.NASSOCIATION.name:
-            # FOR VERSION 1.0.2
-            pass
+            relation1 = root.createElement(relationType.ASSOCIATION.value)
+            relation1.setAttribute('id', relationData['t1'] + relationData['t2'])
+            relation1.setAttribute('side_A', relationData['t1'])
+            relation1.setAttribute('side_B', relationData['t2'])
+            relation1.setAttribute('direction', '')
+            # Relation item
+            item1 = root.createElement("item")
+            item1.setAttribute('id', 'name')
+            item1.setAttribute('value', relationData['label'])
+            relation1.appendChild(item1)
+            item2 = root.createElement("item")
+            item2.setAttribute('id', 'multiplicityA')
+            item2.setAttribute('value', relationData['c1'])
+            relation1.appendChild(item2)
+            item3 = root.createElement("item")
+            item3.setAttribute('id', 'multiplicityB')
+            item3.setAttribute('value', relationData['c2'])
+            relation1.appendChild(item3)
+            item4 = root.createElement("item")
+            item4.setAttribute('id', 'roleA')
+            item4.setAttribute('value', '')
+            relation1.appendChild(item4)
+            item5 = root.createElement("item")
+            item5.setAttribute('id', 'roleB')
+            item5.setAttribute('value', '')
+            relation1.appendChild(item5)
+            # add relation1
+            xml.appendChild(relation1)
+            relation2 = root.createElement(relationType.ASSOCIATION.value)
+            relation2.setAttribute('id', relationData['t1'] + relationData['t2'] + relationData['t3'])
+            relation2.setAttribute('style', "dashed")
+            relation2.setAttribute('side_A', relationData['t3'])
+            relation2.setAttribute('side_B', relationData['t1'] + relationData['t2'])
+            relation2.setAttribute('direction', '')
+            # Relation item
+            item6 = root.createElement("item")
+            item6.setAttribute('id', 'multiplicityA')
+            item6.setAttribute('value', relationData['c3'])
+            relation2.appendChild(item6)
+            # add relation1
+            xml.appendChild(relation2)
         elif relationData['type'] == relationType.GENERALISATION.name:
             relation = root.createElement(relationType.GENERALISATION.value)
             relation.setAttribute('id', relationData['t1'] + relationData['t2'])
@@ -98,6 +137,14 @@ def xmlGenerator(type: Enum, data: dict):
             item1.setAttribute('id', 'name')
             item1.setAttribute('value', relationData['label'])
             relation.appendChild(item1)
+            item2 = root.createElement("item")
+            item2.setAttribute('id', 'multiplicityA')
+            item2.setAttribute('value', relationData['c1'])
+            relation.appendChild(item2)
+            item3 = root.createElement("item")
+            item3.setAttribute('id', 'multiplicityB')
+            item3.setAttribute('value', relationData['c2'])
+            relation.appendChild(item3)
             # add relation
             xml.appendChild(relation)
         elif relationData['type'] == relationType.COMPOSITION.name:
@@ -110,6 +157,14 @@ def xmlGenerator(type: Enum, data: dict):
             item1.setAttribute('id', 'name')
             item1.setAttribute('value', relationData['label'])
             relation.appendChild(item1)
+            item2 = root.createElement("item")
+            item2.setAttribute('id', 'multiplicityA')
+            item2.setAttribute('value', relationData['c1'])
+            relation.appendChild(item2)
+            item3 = root.createElement("item")
+            item3.setAttribute('id', 'multiplicityB')
+            item3.setAttribute('value', relationData['c2'])
+            relation.appendChild(item3)
             # add relation
             xml.appendChild(relation)
         elif relationData['type'] == relationType.AGGREGATION.name:
@@ -122,8 +177,18 @@ def xmlGenerator(type: Enum, data: dict):
             item1.setAttribute('id', 'name')
             item1.setAttribute('value', relationData['label'])
             relation.appendChild(item1)
+            item2 = root.createElement("item")
+            item2.setAttribute('id', 'multiplicityA')
+            item2.setAttribute('value', relationData['c1'])
+            relation.appendChild(item2)
+            item3 = root.createElement("item")
+            item3.setAttribute('id', 'multiplicityB')
+            item3.setAttribute('value', relationData['c2'])
+            relation.appendChild(item3)
             # add relation
             xml.appendChild(relation)
+        elif relationData['type'] == relationType.NairASSOCIATION.name:
+            pass# vERSION 1.0.2
         else:
             pass
 
@@ -139,7 +204,9 @@ class diagramTypeTag(Enum):
 
 class relationType(Enum):
     ASSOCIATION = "UMLAssociation"
-    NASSOCIATION = "UMLNAssociation"
+    NASSOCIATION = "UMLClassEntityAssociation"
+    NairASSOCIATION = "UMLNAssociation"
+    RASSOCIATION = "UMLAggregation"
     GENERALISATION = "UMLGeneralization"
     COMPOSITION = "UMLComposition"
     AGGREGATION = "UMLAggregation"

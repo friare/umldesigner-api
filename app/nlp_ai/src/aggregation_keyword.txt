@@ -5,6 +5,7 @@ renfermer
 contenir
 posséder
 inclure
+constituer
 comporter
 enfermer
 englober

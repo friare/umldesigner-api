@@ -148,10 +148,6 @@ def is_token_blacklisted(token: str) -> bool:
     with open('./app/security/blacklist.ako') as file:
         content = file.read()
         array = content[:-1].split(';')
-        print(array)
-        print('array')
-        print(token)
-        print('token')
         if token in array:
             return True
     return False

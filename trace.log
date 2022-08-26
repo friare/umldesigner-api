@@ -1,0 +1,1 @@
+{'date': '2022-08-24', 'text': 'Une personne utilise un langage de programmation dans un projet. Un projet a un id. Un langage a un id.', 'error': UnboundLocalError("local variable 'item7' referenced before assignment")}

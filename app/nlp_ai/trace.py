@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from datetime import date 
 
 database = r"../../database.db"
 
@@ -16,16 +17,16 @@ def create_connection(db_file):
         print(e)
     return conn
 
-def insert_log(conn, log_data):
+def insert_log(conn, text, log):
     """
     Create a new project into the projects table
     :param conn:
     :param project:
     :return: project id
     """
-    sql = ''' INSERT INTO logs (texte,trace) VALUES(?,?) '''
+    sql = """ INSERT INTO logs (texte,trace) VALUES(?,?) """
     cur = conn.cursor()
-    cur.execute(sql, log_data)
+    cur.executemany(sql, [(text, log)])
     conn.commit()
     return cur.lastrowid
 
@@ -36,16 +37,23 @@ def init_log_db():
         cur.execute(""" CREATE TABLE logs (texte text, trace text)""")
         conn.commit()
         conn.close()
-    except:
-        pass
+    except Exception as e:
+    	print('>>>>>>>>>>>>>>>>>>>>')
+    	print(e)
 
-def save_log(text, log):
+#def save_log(text, log):
     #create table if not exist
-    init_log_db()
+#    init_log_db()
 
     # create a database connection
-    conn = create_connection(database)
+#    conn = create_connection(database)
 
-    with conn:
-        log_data = (text, log);
-        log_id = insert_log(conn, log_data)
+#    with conn:
+#        log_id = insert_log(conn, text, log)
+        
+def save_log(text, log):
+    with open('trace.log', 'a') as f:
+        trace = {'date': str(date.today()), 'text': text, 'error': log}
+        f.write(str(trace))
+        f.write('\n')
+ 

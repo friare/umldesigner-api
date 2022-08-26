@@ -125,6 +125,10 @@ def xmlGenerator(type: Enum, data: dict):
             item6.setAttribute('id', 'multiplicityA')
             item6.setAttribute('value', relationData['c3'])
             relation2.appendChild(item6)
+            item7 = root.createElement("item")
+            item7.setAttribute('id', 'multiplicityB')
+            item7.setAttribute('value', '')
+            relation2.appendChild(item7)
             # add relation1
             xml.appendChild(relation2)
         elif relationData['type'] == relationType.GENERALISATION.name:
@@ -206,7 +210,7 @@ class relationType(Enum):
     ASSOCIATION = "UMLAssociation"
     NASSOCIATION = "UMLClassEntityAssociation"
     NairASSOCIATION = "UMLNAssociation"
-    RASSOCIATION = "UMLAggregation"
+    RASSOCIATION = "UMLReflexiveAssociation"
     GENERALISATION = "UMLGeneralization"
     COMPOSITION = "UMLComposition"
     AGGREGATION = "UMLAggregation"

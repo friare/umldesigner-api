@@ -7,7 +7,7 @@ from ..repository import auth
 
 SECRET_KEY = "d5931bf879a3cbacace54c759f28f707bce8384d9231c6e206c2fb7886faded0"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -23,7 +23,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 def verify_token(token: str, credentials_exception):
     try:
         if auth.is_token_blacklisted(token):
-            print('---------\n---------\n----------\n----------\n--------')
             raise credentials_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

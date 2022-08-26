@@ -11,7 +11,7 @@ stanza.download('fr')
 
 from nltk.metrics.distance import jaccard_distance
 from nltk.util import ngrams
-nltk.download('fr')
+nltk.download('words')
 from nltk.corpus import words
 correct_words = words.words()
 

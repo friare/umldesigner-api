@@ -66,6 +66,7 @@ class ShowVersion(BaseModel):
 class Diagram(BaseModel):
     label: str = "new diagram"
     plain_text: str = ""
+    xml_image: str = ""
 
 class PublicDiagram(BaseModel):
     token: str = "edz0q0edzddze0dezddedezdzedze8dd6d1d6ze"

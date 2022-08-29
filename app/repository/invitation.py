@@ -33,6 +33,8 @@ def signup_and_accept(request, token1, token2, db):
     if (not collaborator.first()) or (not user.first()):
         raise HTTPException(status_code=404, detail='Not Found.')
 
+    user_id = user.first().id
+
     user.update({
         'name': request.name,
         'password': Hash.bcrypt(request.password),
@@ -45,7 +47,6 @@ def signup_and_accept(request, token1, token2, db):
         'revokation_token': '',
         'is_active': True,
     })
-
     db.commit()
 
     #collaborator
@@ -53,7 +54,7 @@ def signup_and_accept(request, token1, token2, db):
         role="INVIITE",
         permission="LECTURE SEULE",
         project_id=1,
-        user_id=user.id,
+        user_id=user_id,
         validation_token="",
         revokation_token="",
         is_active = True

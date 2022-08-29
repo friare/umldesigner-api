@@ -27,7 +27,7 @@ def create(request, project_id, type, db, tokendata):
                 type=type, 
                 label=request.label,
                 plain_text=request.plain_text,
-                xml_image="",
+                xml_image=request.xml_image,
                 public_acces_token=token,
                 date_creation=datetime.now(), 
                 author_id=tokendata.id,

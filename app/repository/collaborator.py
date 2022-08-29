@@ -21,7 +21,7 @@ def invite(request, project_id, db, tokendata):
         raise HTTPException(status_code=404, detail=f"This project do not exist.")
     
     author = db.query(models.User).filter(models.User.id == tokendata.id).first()
-    user = db.query(models.User).filter(models.User.email == request.collaborator_email).first()
+    user = db.query(models.User).filter(models.User.email == request.collaborator_email).filter(models.User.disabled == 0).first()
     if not user:
         #create account 
         token = ''
@@ -59,7 +59,7 @@ def invite(request, project_id, db, tokendata):
         db.add(colab)
         db.commit()
         db.refresh(colab)
-        return {'data':'new_user_invited', 'activation_token': token, 'collaborator':colab, 'project':project.first(), 'author':author}
+        return {'data':'new_user_invited', 'activation_token': token, 'collaborator':colab, 'project':project.first(), 'author':author, 'receiver_mail': request.collaborator_email}
     else:
         already_collab = db.query(models.Collaborator).filter(models.Collaborator.user_id == user.id).filter(models.Collaborator.project_id == project_id).first()
         if already_collab:
@@ -88,7 +88,7 @@ def invite(request, project_id, db, tokendata):
         db.add(colab)
         db.commit()
         db.refresh(colab)
-        return {'data':'old_user_invited', 'collaborator':colab, 'project':project.first(), 'author':author}
+        return {'data':'old_user_invited', 'collaborator':colab, 'project':project.first(), 'author':author, 'receiver_mail': request.collaborator_email}
 
 def delete(project_id, id, db, tokendata):
     project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.creator_id == tokendata.id)

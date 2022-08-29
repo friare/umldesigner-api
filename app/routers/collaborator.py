@@ -40,7 +40,7 @@ async def invite_collaborator(background_tasks: BackgroundTasks, request: schema
             'author': data['author'].name,
             'project': data['project'].title,
             'access': data['collaborator'].permission,
-            'accept_token': mail.INVITATION_ACCEPT_LINK_AND_REGISTER.format(data['collaborator'].validation_token, data['activation_token']),
+            'accept_token': mail.INVITATION_ACCEPT_LINK_AND_REGISTER.format(data['collaborator'].validation_token, data['activation_token'], data['receiver_mail']),
             'revoke_token': mail.INVITATION_REJECT_LINK_AND_REGISTER.format(data['collaborator'].revokation_token, data['activation_token'])
         }
 

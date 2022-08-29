@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
-from datetime import date 
+from datetime import datetime 
+import traceback
 
 database = r"../../database.db"
 
@@ -53,7 +54,7 @@ def init_log_db():
         
 def save_log(text, log):
     with open('trace.log', 'a') as f:
-        trace = {'date': str(date.today()), 'text': text, 'error': log}
+        trace = {'date': str(datetime.now()), 'text': text, 'error': log, 'trace':traceback.format_exc()}
         f.write(str(trace))
-        f.write('\n')
+        f.write('\n\n')
  

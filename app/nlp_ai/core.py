@@ -170,15 +170,17 @@ def atomicSentenceMaker(doc: stanza.Document, verbose: bool = False) -> list:
 def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
     #funct
     def getNewStruct():
-        return {'d1': None, 's1': None, 'v': None, 'd2': None, 's2': None, 'ss1': [], 'ss2': [], 'obj': [], 'sens': 'toRight'}
+        return {'d1': None, 's1': None, 'v': None, 'd2': None, 's2': None, 'ss1': [], 'ss2': [], 'obj': [], 'sens': 'toRight', 'matchRate': -1}
     
     #data
     result = []
     template = []
     SIMPLE_PASS_SENTENCE = False
+    matchRate=0
     
     #logic1
     for structObj in svo:
+        matchRate += 1
         for obj in structObj:
             template = []
             if obj['subject'] != None:
@@ -215,6 +217,7 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
                 for firstPart in template:
                     for element in t_otherList:
                         t3 = firstPart.copy()
+                        t3['matchRate'] = matchRate
                         t3['s2'] = element['main']['word'].lemma
                         t3['d2'] = element['main']['det'][0].lemma if len(element['main']['det'])>0 else 'default'
                         if SIMPLE_PASS_SENTENCE:
@@ -344,13 +347,13 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
         className = [elem['name'] for elem in classDesc]
         for sentence in svoList:
             if sentence['s1'] in className and sentence['s2'] in className:
-                temp = {'t1': sentence['s1'], 't2': sentence['s2'], 'type': getRelationType(sentence['v'], sens=sentence['sens'], reflexive=(sentence['s1']==sentence['s2'])), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v'], 't3': None, 'c3': ''}
+                temp = {'t1': sentence['s1'], 't2': sentence['s2'], 'type': getRelationType(sentence['v'], sens=sentence['sens'], reflexive=(sentence['s1']==sentence['s2'])), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v'], 't3': None, 'c3': '', 'matchRate': sentence['matchRate']}
                 if temp['type'] == 'GENERALISATION':
                     temp['c1'], temp['c2'], temp['label'] = '', '', ''
                 potentialRelation.append(temp)
             for ss2 in sentence['ss2']:
                 if sentence['s1'] in className and ss2 in className:
-                    temp = {'t1': sentence['s1'], 't2': ss2, 'type': getRelationType(sentence['v'], sens=sentence['sens'], reflexive=(sentence['s1']==sentence['s2'])), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v'], 't3': None, 'c3': ''}
+                    temp = {'t1': sentence['s1'], 't2': ss2, 'type': getRelationType(sentence['v'], sens=sentence['sens'], reflexive=(sentence['s1']==sentence['s2'])), 'c1': getMultiplicity(sentence['d1']), 'c2': getMultiplicity(sentence['d2']), 'direction': 'a' if (sentence['sens'] == 'toLeft') else 'b', 'label': sentence['v'], 't3': None, 'c3': '', 'matchRate': sentence['matchRate']}
                     if temp['type'] == 'GENERALISATION':
                         temp['c1'], temp['c2'], temp['label'] = '', '', ''
                     potentialRelation.append(temp)
@@ -386,7 +389,7 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
     #find class association
     for i, relationMaster in enumerate(relationFilter):
         for j, relation in enumerate(relationFilter):
-            if relationMaster['t1'] == relation['t1'] and relationMaster['label'] == relation['label'] and relationMaster['t2'] != relation['t2']:
+            if relationMaster['t1'] == relation['t1'] and relationMaster['label'] == relation['label'] and relationMaster['matchRate'] == relation['matchRate'] and relationMaster['t2'] != relation['t2']:
                 relationFilter[j]['t3'] = relationMaster['t2']
                 relationFilter[j]['c3'] = relationMaster['c2']
                 relationFilter[j]['type'] = 'NASSOCIATION'
@@ -401,7 +404,6 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
     #return
     return {'allNodes': table, 'relation': relationFilter}
 
-
 def typosTracker(potential_incorrect_words: list = [], verbose: bool = False) -> list:
     temp = []
     for word in potential_incorrect_words:
@@ -410,3 +412,4 @@ def typosTracker(potential_incorrect_words: list = [], verbose: bool = False) ->
         print(sorted(temp, key = lambda val:val[0])[0][1])
     return sorted(temp, key = lambda val:val[0])[0][1]
 # checkpoint - 202208231158
+# checkpoint - 202208291024

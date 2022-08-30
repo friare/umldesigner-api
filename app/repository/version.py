@@ -52,6 +52,24 @@ def push(id, db, tokendata):
     db.commit()
     return diagram.first()
 
+def get(access_token, db, tokendata):
+    version = db.query(models.Version).filter(models.Version.public_link == access_token).first()
+    if not version:
+        raise HTTPException(status_code=404, detail='Not found.')
+    diagram = db.query(models.Diagram).filter(models.Diagram.public_acces_token == version.public_link.split('-')[0]).first()
+    if not diagram:
+        raise HTTPException(status_code=404, detail='Not found.')
+    grantAaccess = False
+    colab = db.query(models.Collaborator).filter(models.Collaborator.project_id == diagram.project_id).filter(models.Collaborator.is_active == True).filter(models.Collaborator.permission == 'ADMIN').all()
+    for c in colab:
+        if(c.user_id == int(tokendata.id)):
+            grantAaccess = True
+            break
+    version1 = db.query(models.Version).filter(models.Version.public_link == access_token).filter(models.Version.id_colaborator == tokendata.id).first()
+    if not version1 and not grantAaccess:
+        raise HTTPException(status_code=404, detail='Not found.')
+    return version
+
 def edit_version(request, id, db, tokendata):
     version = db.query(models.Version).filter(models.Version.id == id)
     if not version.first():

@@ -115,12 +115,13 @@ class Alert(BaseModel):
 class ShowAlert(BaseModel):
     id: int
     type: str
-    id_version: int
+    version_id: int
     project_owner_id: int
     id_project: int
     label: str = "version1.0"
     date_update: datetime
     already_read: bool
+    version: ShowVersion
 
     class Config():
         orm_mode = True

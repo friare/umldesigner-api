@@ -76,6 +76,7 @@ class Version(Base):
     public_link = Column(Text)
 
     diagram = relationship('Diagram', back_populates='versions', cascade="all,delete")
+    alert = relationship('Alert', back_populates='version', cascade="all,delete")
     
 class Alert(Base):
     __tablename__ = "alerts"
@@ -83,13 +84,14 @@ class Alert(Base):
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String, default="Nouvelle version")
     label = Column(String, default="Version1.0")
-    id_version = Column(Integer, ForeignKey('versions.id'))
+    version_id = Column(Integer, ForeignKey('versions.id'))
     project_owner_id = Column(Integer, ForeignKey('users.id'))
     id_project = Column(Integer, ForeignKey('projects.id'))
     date_update = Column(DATETIME)
     already_read = Column(Boolean, default=False)
 
     project_owner = relationship('User', back_populates='alerts', cascade="all,delete")
+    version = relationship('Version', back_populates='alert', cascade="all,delete")
     
 
 class Code(Base):

@@ -37,12 +37,13 @@ def signup_and_accept(request, token1, token2, db):
 
     user.update({
         'name': request.name,
-        'password': Hash.bcrypt(request.password),
+        'password': Hash.bcrypt(request.password), 
         'activation_token': '',
         'disabled': False
     })
-
+    db.commit()
     collaborator.update({
+        'user_name':request.name,
         'validation_token': '',
         'revokation_token': '',
         'is_active': True,
@@ -55,6 +56,7 @@ def signup_and_accept(request, token1, token2, db):
         permission="LECTURE SEULE",
         project_id=1,
         user_id=user_id,
+        user_name=request.name,
         validation_token="",
         revokation_token="",
         is_active = True

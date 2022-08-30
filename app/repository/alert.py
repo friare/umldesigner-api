@@ -13,7 +13,7 @@ def get_alert(db, tokendata):
 def new_alert(version, diagram, main_diagram, db, tokendata) -> bool:
     try:
         alert = models.Alert(
-            id_version=version.id,
+            version_id=version.id,
             project_owner_id=main_diagram.author_id,
             id_project=main_diagram.project_id,
             date_update=datetime.now(),
@@ -28,7 +28,7 @@ def new_alert(version, diagram, main_diagram, db, tokendata) -> bool:
 
 def update_alert(version, db) -> bool:
     try:
-        alert = db.query(models.Alert).filter(models.Alert.id_version == version.first().id)
+        alert = db.query(models.Alert).filter(models.Alert.version_id == version.first().id)
         if not alert.first():
             raise HTTPException(status_code=403, detail='Not allowed.')
         alert.update({

@@ -28,3 +28,7 @@ def pull_diagram(id: int, db: Session = Depends(database.get_db), tokendata = De
 @router.put('/version/update/{id}', status_code=200, response_model=schemas.ShowVersion)
 def edit_version(request: schemas.Version2, id: str, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
     return versionRepo.edit_version(request, id, db, tokendata)
+
+@router.get('/version/{access_token}', status_code=200, response_model=schemas.ShowVersion)
+def get_version(access_token, db: Session = Depends(database.get_db), tokendata = Depends(oauth2.get_current_user)):
+    return versionRepo.get(access_token, db, tokendata)

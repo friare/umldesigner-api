@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.datastruct.database import engine
-from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert, websocket, index
+from app.routers import authentication, uml, project, diagram, collaborator, invitation, version, alert, websocket, index, code
 from app.datastruct import models, database
 from dotenv import load_dotenv
 from app.seeder import seeder
@@ -46,6 +46,7 @@ app.include_router(version.router)
 app.include_router(alert.router)
 app.include_router(uml.router)
 app.include_router(websocket.router)
+app.include_router(code.router)
 app.include_router(index.router)
 app.include_router(seeder.router)
 

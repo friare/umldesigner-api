@@ -3,7 +3,7 @@ from sqlite3 import Error
 from datetime import datetime 
 import traceback
 
-database = r"../../database.db"
+database = r"../../../database.db"
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database

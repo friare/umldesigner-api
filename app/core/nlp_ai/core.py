@@ -20,7 +20,7 @@ nlp_pipeline = stanza.Pipeline('fr')
 
 #load keys word
 AGREGATION_LIST = []
-with open('app/nlp_ai/src/aggregation_keyword.txt') as file:
+with open('app/core/nlp_ai/src/aggregation_keyword.txt') as file:
     for word in file:
         AGREGATION_LIST.append(word.strip())
 
@@ -103,7 +103,10 @@ def wordLinkedNodeSelector(sentence: stanza.Document.sentences, root_id, nodeChi
                     det = wordLinkedNodeSelector(sentence, word.id, article)
                     punct = wordLinkedNodeSelector(sentence, word.id, 'PUNCT')
                     if len(punct) != 0:
-                        det[0].lemma=(det[0].lemma+punct[0].lemma)
+                        if len(det) == 0:
+                            det.append(punct[0])
+                        else:
+                            det[0].lemma=(det[0].lemma+punct[0].lemma)
                     children.append({'word': word, 'det': det})
                 else:
                     children.append(word)
@@ -261,6 +264,16 @@ def umlObjectClassifier(svo : list, verbose: bool = False) -> list:
                 if result == []:
                     result = template
 
+    for parseData in result:
+        if parseData['s1'] in parseData['ss1']:
+            parseData['ss1'].remove(parseData['s1'])
+        if parseData['s2'] in parseData['ss1']:
+            parseData['ss1'].remove(parseData['s2'])
+        if parseData['s1'] in parseData['ss2']:
+            parseData['ss2'].remove(parseData['s1'])
+        if parseData['s2'] in parseData['ss2']:
+            parseData['ss2'].remove(parseData['s2'])
+
     #debug
     if verbose:
         for parseData in result:
@@ -335,7 +348,7 @@ def umlObjectExtractor(svoList : list, verbose: bool = False) -> dict:
             return 'ASSOCIATION'
     
     def getMultiplicity(verb: str) -> str:
-        cardinality_reper ={'un-':'1,*', 'un*':'0,1', 'un--':'1,2', 'aucun': '0, 0', 'tout': '0.*', 'tous':'0.*', 'chaque': '1,1', 'un et un seul':'1,1', 'un':'1,1', 'des':'0,*', 'plusieurs':'0,*'}
+        cardinality_reper ={'un-':'1,*', 'un*':'0,1', 'un--':'1,2', '--':'1,2', 'aucun': '0, 0', 'tout': '0.*', 'tous':'0.*', 'chaque': '1,1', 'un et un seul':'1,1', 'un':'1,1', 'des':'0,*', 'plusieurs':'0,*'}
         for search_val in cardinality_reper.keys():
             combined = "(" + ")|(".join(search_val) + ")"
             if search_val in verb:

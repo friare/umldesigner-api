@@ -163,6 +163,9 @@ class ActivationToken(BaseModel):
     token: str = "bj45dcd7s5dazdz8aszxzxa"
 #---
 
+class CodeXML(BaseModel):
+    xml_uml: str = "<UMLClassDiagram name='umldesigner.app'></UMLClassDiagram>"
+
 #--------------------------------
 #--------------------------------
 

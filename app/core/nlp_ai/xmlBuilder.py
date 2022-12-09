@@ -61,7 +61,7 @@ def xmlGenerator(type: Enum, data: dict):
             relation.setAttribute('id', relationData['t1'] + relationData['t2'])
             relation.setAttribute('side_A', relationData['t1'])
             relation.setAttribute('side_B', relationData['t2'])
-            relation.setAttribute('direction', relationData['direction'])
+            # relation.setAttribute('direction', relationData['direction'])
             # Relation item
             item1 = root.createElement("item")
             item1.setAttribute('id', 'name')

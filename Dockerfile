@@ -20,7 +20,7 @@
 #EXPOSE 8000
 
 
-FROM python:3.7
+FROM python:3.9
 
 # Set working directory
 WORKDIR /app

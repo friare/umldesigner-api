@@ -18,6 +18,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY main.py ./
 COPY database.db ./
 COPY ./app /app/app
+COPY .env /app/app/.env
 
 # Expose the application port
 EXPOSE 8000
